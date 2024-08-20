@@ -1,0 +1,12 @@
+[project]
+name = "wmm_test"
+version = "0.1.0"
+description = "A test version of WMM Python project"
+authors = [{ name = "Li-Yin Young", email = "you@example.com" }]
+dependencies = [
+    "requests",  # Example of a PyPI package
+    ]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
