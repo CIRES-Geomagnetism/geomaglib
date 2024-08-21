@@ -2,7 +2,7 @@
 #Modified by Adam
 import numpy as np
 import math
-from load import geoid
+from geomaglib import geoid
 from datetime import datetime
 import calendar
     
