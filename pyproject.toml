@@ -1,7 +1,7 @@
 [project]
-name = "wmm_test"
+name = "geomaglib"
 version = "0.1.0"
-description = "A test version of WMM Python project"
+description = "A test version of Geomagnetism Library"
 authors = [{ name = "Li-Yin Young", email = "you@example.com" }]
 dependencies = [
     "requests",  # Example of a PyPI package
