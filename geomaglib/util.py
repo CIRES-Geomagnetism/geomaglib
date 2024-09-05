@@ -113,6 +113,16 @@ def calc_dec_year(year, month,day):
     day_of_year = date.timetuple().tm_yday
     return  year + ((day_of_year -1)/num_days_year)
 
+def calc_decyear_date(decyear) -> datetime:
+
+    year = int(decyear)
+
+    num_days_year = 365
+    if calendar.isleap(year):
+        num_days_year = 366
+
+    day_of_year = (decyear - year) * num_days_year + 1
+
 
 
 

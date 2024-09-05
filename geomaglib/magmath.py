@@ -1,6 +1,7 @@
 import math
 import numpy as np
 
+
 def rad2deg(rad: float) -> float:
 
     """
@@ -150,17 +151,14 @@ def rotate_magvec(Bt, Bp, Br, geoc_lat, geod_lat):
 
     psi = (math.pi/180.0) * (geoc_lat - geod_lat)
 
-
     Bz = Bt * math.sin(psi) + Br * math.cos(psi)
     Bx = Bt * math.cos(psi) - Br * math.sin(psi)
     By = Bp
 
-
-
     return Bx, By, Bz
 
     
-def get_magh(B):
+def get_Bh(Bx, By):
     """
         Compute the magnetic horizontal
 
@@ -176,9 +174,9 @@ def get_magh(B):
 
     """
 
-    return math.sqrt(B[0]**2 + B[1]**2)
+    return math.sqrt(Bx**2 + By**2)
 
-def get_magf(B):
+def get_BF(Bx, By, Bz):
     """
         Get the total intensity
 
@@ -191,7 +189,33 @@ def get_magf(B):
         _________
     """
 
-    f  = math.sqrt(B[0]**2 + B[1]**2 + B[2]**2)
+    f  = math.sqrt(Bx**2 + By**2 + Bz**2)
     return f 
 
+def get_Bdec(Bx, By):
 
+    dec = rad2deg(math.atan2(By, Bx))
+
+    return dec
+
+
+def get_Binc(Bx, By, Bz):
+
+    Bh = get_Bh(Bx, By)
+    inc = rad2deg(math.atan2(Bz, Bh))
+
+    return inc
+
+def get_allB(Bx, By, Bz)-> dict:
+
+    mag_map = {}
+
+    mag_map["x"] = float(Bx)
+    mag_map["y"] = float(By)
+    mag_map["z"] = float(Bz)
+    mag_map["h"] = float(get_Bh(Bx, By))
+    mag_map["f"] = float(get_BF(Bx, By, Bz))
+    mag_map["dec"] = float(get_Bdec(Bx, By))
+    mag_map["inc"] = float(get_Binc(Bx, By, Bz))
+
+    return mag_map
