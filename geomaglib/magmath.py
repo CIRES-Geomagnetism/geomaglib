@@ -176,7 +176,7 @@ def get_Bh(Bx, By):
 
     return math.sqrt(Bx**2 + By**2)
 
-def get_BF(Bx, By, Bz):
+def get_Bf(Bx, By, Bz):
     """
         Get the total intensity
 
@@ -214,8 +214,9 @@ def get_allB(Bx, By, Bz)-> dict:
     mag_map["y"] = float(By)
     mag_map["z"] = float(Bz)
     mag_map["h"] = float(get_Bh(Bx, By))
-    mag_map["f"] = float(get_BF(Bx, By, Bz))
+    mag_map["f"] = float(get_Bf(Bx, By, Bz))
     mag_map["dec"] = float(get_Bdec(Bx, By))
     mag_map["inc"] = float(get_Binc(Bx, By, Bz))
 
     return mag_map
+

@@ -1,0 +1,10 @@
+.DS_Store
+.idea/
+env/
+geomaglib.egg-info/
+
+geomaglib/.DS_Store
+geomaglib/__pycache__/
+
+tests/.DS_Store
+tests/__pycache__/

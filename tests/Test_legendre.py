@@ -3,8 +3,8 @@ import numpy as np
 import os
 import math 
 
-from lib.Legendre_and_SHA import Leg_SHA_for_import
-from load import sh_vars, util
+from geomaglib import Leg_SHA_for_import, legendre
+from geomaglib import sh_vars, util
 class Test_legendre(unittest.TestCase):
 
     def setUp(self)->None:
@@ -30,7 +30,7 @@ class Test_legendre(unittest.TestCase):
     def flatten(self, nested_list):
         for item in nested_list:
             if isinstance(item, list):
-                yield from flatten(item)
+                yield from self.flatten(item)
             else:
                 yield item
 
@@ -96,7 +96,7 @@ class Test_legendre(unittest.TestCase):
         res_file = os.path.join(self.curr_dir, "compare_results_flattten.csv")
         
         nmax = 12
-        Leg = Leg_SHA_for_import.Flattened_Chaos_Legendre1(nmax, colats)
+        Leg = legendre.Flattened_Chaos_Legendre1(nmax, colats)
 
 
         Plm = np.array(Leg[0])
@@ -150,7 +150,7 @@ class Test_legendre(unittest.TestCase):
 
         res_file = os.path.join(self.curr_dir, "compare_results_alf_high.csv")
 
-        nmax = 12
+        nmax = 133
         mPlm, mdPlm = Leg_SHA_for_import.PcupHigh(theta, nmax)
 
 
@@ -167,16 +167,16 @@ class Test_legendre(unittest.TestCase):
 
         for lat in lats:
 
+
+
             colat = 90.0 - float(lat)
             colats = [colat]
-            fLeg = Leg_SHA_for_import.Flattened_Chaos_Legendre1(nmax, colats)
+            fLeg = legendre.Flattened_Chaos_Legendre1(nmax, colats)
             mPlm, mdPlm = Leg_SHA_for_import.PcupHigh(lat, nmax)
 
             fPlm = np.array(fLeg[0]).flatten()
-            #mPlm = np.array(mLeg[0]).flatten()
-
             fdPlm = np.array(fLeg[1]).flatten()
-            #mdPlm = np.array(mLeg[1]).flatten()
+
 
             tol = 1e-12
 
@@ -193,9 +193,73 @@ class Test_legendre(unittest.TestCase):
 
                     fidx += 1
 
+    def test_legendre_extreme_case1(self):
+
+        lat = -90.0
+        alt = 33
+        nmax = 12
+
+        r, theta = util.geod_to_geoc_lat(lat, alt)
+        cotheta = 90.0 - theta
+        colats = [cotheta]
+
+        Leg = legendre.Flattened_Chaos_Legendre1(nmax, colats)
+        legP = np.array(Leg[0]).flatten()
+        legdP = np.array(Leg[1]).flatten()
+
+        mLeg = Leg_SHA_for_import.legendre_manoj(theta, nmax)
+
+        mPlm = np.array(mLeg[0]).flatten()
+        mdPlm = np.array(mLeg[1]).flatten()
 
 
 
+        N = len(mPlm)
+        self.assertEqual(len(legdP), len(mPlm))
+        fidx = 1
+
+        for m in range(nmax + 1):
+            for n in range(m, nmax + 1):
+                if n == 0:
+                    continue
+
+                gidx = int(n * (n + 1) / 2 + m)
+                print(f"legP: {legP[fidx]}, legdP: {legdP[fidx]}, mPlm: {mPlm[gidx]}, mdPlm: {mdPlm[gidx]}")
+
+
+                fidx += 1
+
+    def test_legendre_extreme_case2(self):
+
+        lat = -90.0
+        alt = 33
+        nmax = 12
+
+        r, theta = util.geod_to_geoc_lat(lat, alt)
+        cotheta = 90.0 - theta
+        colats = [cotheta]
+
+        Leg = legendre.Flattened_Chaos_Legendre1(nmax, colats)
+        legP = np.array(Leg[0]).flatten()
+        legdP = np.array(Leg[1]).flatten()
+
+
+        mPlm, mdPlm = Leg_SHA_for_import.PcupHigh(theta, nmax)
+
+        fidx = 1
+
+        for m in range(nmax + 1):
+            for n in range(m, nmax + 1):
+                if n == 0:
+                    continue
+
+                gidx = int(n * (n + 1) / 2 + m)
+                print(f"legP: {legP[fidx]}, legdP: {legdP[fidx]}, mPlm: {mPlm[gidx]}, mdPlm: {mdPlm[gidx]}")
+
+                self.assertAlmostEqual(legP[fidx], mPlm[gidx], delta=1e-6)
+                self.assertAlmostEqual(legdP[fidx], -mdPlm[gidx], delta=1e-6)
+
+                fidx += 1
 
 
 if __name__ == "__main__":
