@@ -20,7 +20,7 @@ def deg2rad(deg):
 
 
 
-def calc_Bp_Pole(nmax, geoc_lat, sph, coef_dict):
+def calc_Bp_Pole(nmax, geoc_lat, sph, g, h):
 
     PcupS = [0.0]*(nmax+1)
 
@@ -45,11 +45,11 @@ def calc_Bp_Pole(nmax, geoc_lat, sph, coef_dict):
             k = (((n - 1) * (n - 1)) - 1) / ((2 * n - 1) * (2 * n - 3))
             PcupS[n] = sin_phi * PcupS[n - 1] - k * PcupS[n - 2]
 
-        Bp += sph["relative_radius_power"][n] * (coef_dict["g"][idx] * sph["sin_mlon"][n] - coef_dict["h"][idx] * sph["cos_mlon"][n]) * PcupS[n] * schmidtQuasiNorm3
+        Bp += sph["relative_radius_power"][n] * (g[idx] * sph["sin_mlon"][n] - h[idx] * sph["cos_mlon"][n]) * PcupS[n] * schmidtQuasiNorm3
 
     return Bp
 
-def mag_SPH_summation(nmax, sph, coef_dict, Leg, geoc_lat)->tuple:
+def mag_SPH_summation(nmax, sph, g, h, Leg, geoc_lat)->tuple:
 
 
     Br, Bt, Bp = 0.0, 0.0, 0.0
@@ -68,21 +68,21 @@ def mag_SPH_summation(nmax, sph, coef_dict, Leg, geoc_lat)->tuple:
             #gidx =gidx - 1
 
             Bt -= sph["relative_radius_power"][n] * (
-                        coef_dict["g"][gidx] * sph["cos_mlon"][m] + coef_dict["h"][gidx] * sph["sin_mlon"][m]) * legdP[
+                       g[gidx] * sph["cos_mlon"][m] + h[gidx] * sph["sin_mlon"][m]) * legdP[
                       pidx]
 
             Bp += sph["relative_radius_power"][n] * (
-                    coef_dict["g"][gidx] * sph["sin_mlon"][m] - coef_dict["h"][gidx] * sph["cos_mlon"][m]) * m * legP[pidx]
+                    g[gidx] * sph["sin_mlon"][m] - h[gidx] * sph["cos_mlon"][m]) * m * legP[pidx]
 
             Br -= sph["relative_radius_power"][n] * (
-                        coef_dict["g"][gidx] * sph["cos_mlon"][m] + coef_dict["h"][gidx] * sph["sin_mlon"][m]) * (
+                        g[gidx] * sph["cos_mlon"][m] + h[gidx] * sph["sin_mlon"][m]) * (
                               n + 1) * legP[pidx]
             pidx += 1
 
     cos_phi = math.cos(deg2rad(geoc_lat))
 
     if math.fabs(cos_phi) < 1.0e-10:
-        Bp += calc_Bp_Pole(nmax, geoc_lat, sph, coef_dict)
+        Bp += calc_Bp_Pole(nmax, geoc_lat, sph, g, h)
     else:
         Bp = Bp / cos_phi
 

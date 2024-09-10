@@ -23,7 +23,7 @@ def Flattened_Chaos_Legendre1(nmax, theta, epsilon = 1e-2):
     dPnm.append(np.zeros(len(costh)))
 
 
-    rootn = math.sqrt(np.arange(2 * nmax**2 + 1))
+    rootn = np.sqrt(np.arange(2 * nmax**2 + 1))
 
     # Recursion relations after Langel "The Main Field" (1987),
     # eq. (27) and Table 2 (p. 256)

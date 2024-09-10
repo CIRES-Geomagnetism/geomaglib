@@ -16,6 +16,10 @@ class Test_magmath(unittest.TestCase):
         self.Bdec = [-112.41,  -37.40, 51.30, 0.71, -5.78]
         self.Binc = [88.46, 88.03, 87.48, 63.87, -67.64]
 
+        self.dBx = [69.5, 72.5, -48.7, -33.7, 34.4]
+        self.dBy = [-9.2, 26.3, -20.4, -32.4, 9.2]
+        self.dBz = [20.1, -11.3, 39.7, 101.1, -16.8]
+
         self.tol = 1e-1
 
         self.curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -87,6 +91,8 @@ class Test_magmath(unittest.TestCase):
         timly_coef_dict = sh_loader.timely_modify_magnetic_model(coef_dict, dec_year)
         nmax = sh_loader.calc_num_elems_to_sh_degrees(len(coef_dict["g"]))
 
+        print(coef_dict.keys())
+
         # alt = util.alt_to_ellipsoid_height(alt, lat, lon)
         for i in range(N):
             r, theta = util.geod_to_geoc_lat(lats[i], alts[i])
@@ -96,12 +102,20 @@ class Test_magmath(unittest.TestCase):
 
             Leg = legendre.Flattened_Chaos_Legendre1(nmax, colats)
 
-            Bt, Bp, Br = magmath.mag_SPH_summation(nmax, sph_dict, timly_coef_dict, Leg, theta)
+            Bt, Bp, Br = magmath.mag_SPH_summation(nmax, sph_dict, timly_coef_dict["g"], timly_coef_dict["h"], Leg, theta)
             x, y, z = magmath.rotate_magvec(Bt, Bp, Br, theta, lats[i])
+
+            dBt, dBp, dBr = magmath.mag_SPH_summation(nmax, sph_dict, coef_dict["g_sv"], coef_dict["h_sv"], Leg,
+                                                   theta)
+            dx, dy, dz = magmath.rotate_magvec(dBt, dBp, dBr, theta, lats[i])
 
             self.assertAlmostEqual(x, self.Bx[i], delta=self.tol)
             self.assertAlmostEqual(y, self.By[i], delta=self.tol)
             self.assertAlmostEqual(z, self.Bz[i], delta=self.tol)
+
+            self.assertAlmostEqual(dx, self.dBx[i], delta=self.tol)
+            self.assertAlmostEqual(dy, self.dBy[i], delta=self.tol)
+            self.assertAlmostEqual(dz, self.dBz[i], delta=self.tol)
 
     def test_calc_Bp_Pole(self):
         lat = 90
