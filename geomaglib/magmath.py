@@ -3,31 +3,27 @@ import numpy as np
 
 
 def rad2deg(rad: float) -> float:
-
     """
         Convert radius to degree
     """
-    
-    return rad*180.0/math.pi
+
+    return rad * 180.0 / math.pi
+
 
 def deg2rad(deg):
-
     """
         Convert degree to radius
     """
 
-    return deg*math.pi/180.0
-
+    return deg * math.pi / 180.0
 
 
 def calc_Bp_Pole(nmax, geoc_lat, sph, g, h):
-
-    PcupS = [0.0]*(nmax+1)
+    PcupS = [0.0] * (nmax + 1)
 
     PcupS[0] = 1.0
 
     schmidtQuasiNorm1 = 1.0
-
 
     Bp = 0.0
     sin_phi = math.sin(deg2rad(geoc_lat))
@@ -45,13 +41,13 @@ def calc_Bp_Pole(nmax, geoc_lat, sph, g, h):
             k = (((n - 1) * (n - 1)) - 1) / ((2 * n - 1) * (2 * n - 3))
             PcupS[n] = sin_phi * PcupS[n - 1] - k * PcupS[n - 2]
 
-        Bp += sph["relative_radius_power"][n] * (g[idx] * sph["sin_mlon"][n] - h[idx] * sph["cos_mlon"][n]) * PcupS[n] * schmidtQuasiNorm3
+        Bp += sph["relative_radius_power"][n] * (g[idx] * sph["sin_mlon"][n] - h[idx] * sph["cos_mlon"][n]) * PcupS[
+            n] * schmidtQuasiNorm3
 
     return Bp
 
-def mag_SPH_summation(nmax, sph, g, h, Leg, geoc_lat)->tuple:
 
-
+def mag_SPH_summation(nmax, sph, g, h, Leg, geoc_lat) -> tuple:
     Br, Bt, Bp = 0.0, 0.0, 0.0
 
     legP = np.array(Leg[0]).flatten()
@@ -65,18 +61,18 @@ def mag_SPH_summation(nmax, sph, g, h, Leg, geoc_lat)->tuple:
             if n == 0:
                 continue
             gidx = int(n * (n + 1) / 2 + m)
-            #gidx =gidx - 1
+
 
             Bt -= sph["relative_radius_power"][n] * (
-                       g[gidx] * sph["cos_mlon"][m] + h[gidx] * sph["sin_mlon"][m]) * legdP[
+                    g[gidx] * sph["cos_mlon"][m] + h[gidx] * sph["sin_mlon"][m]) * legdP[
                       pidx]
 
             Bp += sph["relative_radius_power"][n] * (
                     g[gidx] * sph["sin_mlon"][m] - h[gidx] * sph["cos_mlon"][m]) * m * legP[pidx]
 
             Br -= sph["relative_radius_power"][n] * (
-                        g[gidx] * sph["cos_mlon"][m] + h[gidx] * sph["sin_mlon"][m]) * (
-                              n + 1) * legP[pidx]
+                    g[gidx] * sph["cos_mlon"][m] + h[gidx] * sph["sin_mlon"][m]) * (
+                          n + 1) * legP[pidx]
             pidx += 1
 
     cos_phi = math.cos(deg2rad(geoc_lat))
@@ -91,31 +87,25 @@ def mag_SPH_summation(nmax, sph, g, h, Leg, geoc_lat)->tuple:
     return Bt, Bp, Br
 
 
-
-def mag_SPH_summation_alf(nmax, sph, coef_dict, legP, legdP, geoc_lat)->tuple:
-
-
+def mag_SPH_summation_alf(nmax, sph, coef_dict, legP, legdP, geoc_lat) -> tuple:
     Br, Bt, Bp = 0.0, 0.0, 0.0
-
-
 
     for n in range(1, nmax + 1):
         # degree
-        for m in range(n+1):
-
+        for m in range(n + 1):
             gidx = int(n * (n + 1) / 2 + m)
 
             Bt -= sph["relative_radius_power"][n] * (
-                        coef_dict["g"][gidx] * sph["cos_mlon"][m] + coef_dict["h"][gidx] * sph["sin_mlon"][m]) * legdP[
+                    coef_dict["g"][gidx] * sph["cos_mlon"][m] + coef_dict["h"][gidx] * sph["sin_mlon"][m]) * legdP[
                       gidx]
 
             Bp += sph["relative_radius_power"][n] * (
-                    coef_dict["g"][gidx] * sph["sin_mlon"][m] - coef_dict["h"][gidx] * sph["cos_mlon"][m]) * m * legP[gidx]
+                    coef_dict["g"][gidx] * sph["sin_mlon"][m] - coef_dict["h"][gidx] * sph["cos_mlon"][m]) * m * legP[
+                      gidx]
 
             Br -= sph["relative_radius_power"][n] * (
-                        coef_dict["g"][gidx] * sph["cos_mlon"][m] + coef_dict["h"][gidx] * sph["sin_mlon"][m]) * (
-                              n + 1) * legP[gidx]
-
+                    coef_dict["g"][gidx] * sph["cos_mlon"][m] + coef_dict["h"][gidx] * sph["sin_mlon"][m]) * (
+                          n + 1) * legP[gidx]
 
     cos_phi = math.cos(deg2rad(geoc_lat))
 
@@ -124,10 +114,7 @@ def mag_SPH_summation_alf(nmax, sph, coef_dict, legP, legdP, geoc_lat)->tuple:
     else:
         Bp = Bp / cos_phi
 
-
-
     return Bt, Bp, Br
-
 
 
 def rotate_magvec(Bt, Bp, Br, geoc_lat, geod_lat):
@@ -148,8 +135,7 @@ def rotate_magvec(Bt, Bp, Br, geoc_lat, geod_lat):
             B = [Bx, By, Bz]
     """
 
-
-    psi = (math.pi/180.0) * (geoc_lat - geod_lat)
+    psi = (math.pi / 180.0) * (geoc_lat - geod_lat)
 
     Bz = Bt * math.sin(psi) + Br * math.cos(psi)
     Bx = Bt * math.cos(psi) - Br * math.sin(psi)
@@ -157,66 +143,68 @@ def rotate_magvec(Bt, Bp, Br, geoc_lat, geod_lat):
 
     return Bx, By, Bz
 
-    
-def get_Bh(Bx, By):
-    """
-        Compute the magnetic horizontal
 
-        Parameters:
-        ____________
+class GeomagElements:
 
-        B:array the gepdetic magnetic vector
-        B = [Bx, By, Bz]
-        Returns:
-        ____________
+    def __init__(self, Bx, By, Bz):
+        self.Bx = Bx
+        self.By = By
+        self.Bz = Bz
 
-        h:float the magneitc horizontal
+    def get_Bh(self):
+        """
+            Compute the magnetic horizontal
 
-    """
+            Parameters:
+            ____________
 
-    return math.sqrt(Bx**2 + By**2)
+            B:array the gepdetic magnetic vector
+            B = [Bx, By, Bz]
+            Returns:
+            ____________
 
-def get_Bf(Bx, By, Bz):
-    """
-        Get the total intensity
+            h:float the magneitc horizontal
 
-        Parameters:
-        ____________
-        B:array the magnetic vector
+        """
 
-        Returns:
-        f:float the total intensity value
-        _________
-    """
+        return math.sqrt(self.Bx ** 2 + self.By ** 2)
 
-    f  = math.sqrt(Bx**2 + By**2 + Bz**2)
-    return f 
+    def get_Bf(self):
+        """
+            Get the total intensity
 
-def get_Bdec(Bx, By):
+            Parameters:
+            ____________
+            B:array the magnetic vector
 
-    dec = rad2deg(math.atan2(By, Bx))
+            Returns:
+            f:float the total intensity value
+            _________
+        """
 
-    return dec
+        f = math.sqrt(self.Bx ** 2 + self.By ** 2 + self.Bz ** 2)
+        return f
 
+    def get_Bdec(self):
+        dec = rad2deg(math.atan2(self.By, self.Bx))
 
-def get_Binc(Bx, By, Bz):
+        return dec
 
-    Bh = get_Bh(Bx, By)
-    inc = rad2deg(math.atan2(Bz, Bh))
+    def get_Binc(self):
+        Bh = self.get_Bh()
+        inc = rad2deg(math.atan2(self.Bz, Bh))
 
-    return inc
+        return inc
 
-def get_allB(Bx, By, Bz)-> dict:
+    def get_all(self) -> dict:
+        mag_map = {}
 
-    mag_map = {}
+        mag_map["x"] = float(self.Bx)
+        mag_map["y"] = float(self.By)
+        mag_map["z"] = float(self.Bz)
+        mag_map["h"] = float(self.get_Bh())
+        mag_map["f"] = float(self.get_Bf())
+        mag_map["dec"] = float(self.get_Bdec())
+        mag_map["inc"] = float(self.get_Binc())
 
-    mag_map["x"] = float(Bx)
-    mag_map["y"] = float(By)
-    mag_map["z"] = float(Bz)
-    mag_map["h"] = float(get_Bh(Bx, By))
-    mag_map["f"] = float(get_Bf(Bx, By, Bz))
-    mag_map["dec"] = float(get_Bdec(Bx, By))
-    mag_map["inc"] = float(get_Binc(Bx, By, Bz))
-
-    return mag_map
-
+        return mag_map
