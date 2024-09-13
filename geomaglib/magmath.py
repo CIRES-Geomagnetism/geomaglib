@@ -152,6 +152,7 @@ class GeomagElements:
         self.Bz = Bz
 
 
+
     def get_Bh(self):
         """
             Compute the magnetic horizontal
@@ -197,7 +198,7 @@ class GeomagElements:
 
         return inc
 
-    def get_all(self) -> dict:
+    def get_all_base(self) -> dict:
         mag_map = {}
 
         mag_map["x"] = float(self.Bx)
@@ -209,3 +210,19 @@ class GeomagElements:
         mag_map["inc"] = float(self.get_Binc())
 
         return mag_map
+
+    def get_all(self, dx, dy, dz) -> dict:
+
+        mag_map = self.get_all_base()
+
+        mag_map["dx"] = float(dx)
+        mag_map["dy"] = float(dy)
+        mag_map["dz"] = float(dz)
+        mag_map["dh"] = (mag_map["x"]*dx + mag_map["y"]*dy)/mag_map["h"]
+        mag_map["df"] = (mag_map["x"]*dx + mag_map["y"]*dy + mag_map["z"]*dz)/mag_map["f"]
+        mag_map["ddec"] = 180/math.pi * (mag_map["x"]*dy - mag_map["y"]*dx)/ (mag_map["h"]**2)
+        mag_map["dinc"] = 180/math.pi * (mag_map["h"]*dz - mag_map["z"]*mag_map["dh"] )/ (mag_map["f"]**2)
+
+        return mag_map
+
+

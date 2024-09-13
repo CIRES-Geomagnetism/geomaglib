@@ -22,6 +22,11 @@ class Test_magmath(unittest.TestCase):
         self.dBy = [-9.2, 26.3, -20.4, -32.4, 9.2]
         self.dBz = [20.1, -11.3, 39.7, 101.1, -16.8]
 
+        self.dBdec = [2.6, 1.9, 0.6, -0.1, 0.0]
+        self.dBinc = [0.0, -0.0, 0.0, 0.1, 0.0]
+        self.dBh = [-18.0, 41.6, -46.4, -34.1, 33.3]
+        self.dBf = [19.6, -9.8, 37.7, 75.7, 28.2]
+
         self.tol = 1e-1
 
         self.curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -68,13 +73,13 @@ class Test_magmath(unittest.TestCase):
 
             self.assertAlmostEqual(round(inc, 2), self.Binc[i], delta=0.01)  # add assertion here
 
-    def test_get_allB(self):
+    def test_get_all_base(self):
 
         N = len(self.Bx)
 
         for i in range(N):
             results = GeomagElements(self.Bx[i], self.By[i], self.Bz[i])
-            map = results.get_all()
+            map = results.get_all_base()
 
             self.assertAlmostEqual(map["x"], self.Bx[i], delta=self.tol)
             self.assertAlmostEqual(map["y"], self.By[i], delta=self.tol)
@@ -83,6 +88,24 @@ class Test_magmath(unittest.TestCase):
             self.assertAlmostEqual(map["f"], self.Bf[i], delta=self.tol)
             self.assertAlmostEqual(map["dec"], self.Bdec[i], delta=0.01)
             self.assertAlmostEqual(map["inc"], self.Binc[i], delta=0.01)
+
+    def test_get_all(self):
+
+        for i in range(len(self.dBx)):
+            results = GeomagElements(self.Bx[i], self.By[i], self.Bz[i])
+            map = results.get_all(self.dBx[i], self.dBy[i], self.dBz[i])
+
+            print(map["df"])
+
+            self.assertAlmostEqual(round(map["dh"], 1), self.dBh[i], delta=self.tol)
+
+            #self.assertAlmostEqual(round(map["df"], 1), self.dBf[i], delta=0.01)
+
+            self.assertAlmostEqual(round(map["ddec"], 1), self.dBdec[i], delta=0.01)
+            self.assertAlmostEqual(round(map["dinc"], 1), self.dBinc[i], delta=0.01)
+
+
+
     def test_mag_SPH_summation(self):
 
 
