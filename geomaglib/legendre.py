@@ -1,8 +1,15 @@
 import math
 import numpy as np
 import warnings
-def Flattened_Chaos_Legendre1(nmax, theta, epsilon = 1e-2, silence_warnings = False):
+def Flattened_Chaos_Legendre1(nmax, theta, epsilon = 1e-6, silence_warnings = False) -> list:
 	"""
+ 	Inputs:
+	nmax (int): maximum degree of legendre polynomial (all orders for each degree are calculated)
+ 	theta (float or np.array(float)): colatitude values where the legendre polynomials are calcuated
+  	epsilon (float): By how much pole values are shifted away from poles to avoid divide by zero (Should be > 1e-6)
+   	silence_warnings (bool): True -> do not display warning that theta values < epsilon have been shifted. False -> display
+	...
+	Outputs:
 	Takes nmax and colatitude (degrees) as inputs
 	Outputs a 2 dimensional numpy array which contains the associated
 	legendre polynomials (Pnm) and the respective derivatives (dPnm).
@@ -73,4 +80,4 @@ def Flattened_Chaos_Legendre1(nmax, theta, epsilon = 1e-2, silence_warnings = Fa
 
 	#Pnm.pop(0)
 	#dPnm.pop(0)
-	return[Pnm, dPnm]
+	return [Pnm, dPnm]
