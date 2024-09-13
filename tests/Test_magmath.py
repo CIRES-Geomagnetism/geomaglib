@@ -93,13 +93,14 @@ class Test_magmath(unittest.TestCase):
 
         for i in range(len(self.dBx)):
             results = GeomagElements(self.Bx[i], self.By[i], self.Bz[i])
-            map = results.get_all(self.dBx[i], self.dBy[i], self.dBz[i])
+            results.set_sv_vec(self.dBx[i], self.dBy[i], self.dBz[i])
+            map = results.get_all()
 
             print(map["df"])
 
             self.assertAlmostEqual(round(map["dh"], 1), self.dBh[i], delta=self.tol)
 
-            #self.assertAlmostEqual(round(map["df"], 1), self.dBf[i], delta=0.01)
+            self.assertAlmostEqual(round(map["df"], 1), self.dBf[i], delta=0.01)
 
             self.assertAlmostEqual(round(map["ddec"], 1), self.dBdec[i], delta=0.01)
             self.assertAlmostEqual(round(map["dinc"], 1), self.dBinc[i], delta=0.01)

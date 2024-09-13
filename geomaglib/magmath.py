@@ -151,6 +151,15 @@ class GeomagElements:
         self.By = By
         self.Bz = Bz
 
+        self.dBx = None
+        self.dBy = None
+        self.dBz = None
+
+    def set_sv_vec(self, dx, dy, dz):
+
+        self.dBx = dx
+        self.dBy = dy
+        self.dBz = dz
 
 
     def get_Bh(self):
@@ -211,17 +220,17 @@ class GeomagElements:
 
         return mag_map
 
-    def get_all(self, dx, dy, dz) -> dict:
+    def get_all(self) -> dict:
 
         mag_map = self.get_all_base()
 
-        mag_map["dx"] = float(dx)
-        mag_map["dy"] = float(dy)
-        mag_map["dz"] = float(dz)
-        mag_map["dh"] = (mag_map["x"]*dx + mag_map["y"]*dy)/mag_map["h"]
-        mag_map["df"] = (mag_map["x"]*dx + mag_map["y"]*dy + mag_map["z"]*dz)/mag_map["f"]
-        mag_map["ddec"] = 180/math.pi * (mag_map["x"]*dy - mag_map["y"]*dx)/ (mag_map["h"]**2)
-        mag_map["dinc"] = 180/math.pi * (mag_map["h"]*dz - mag_map["z"]*mag_map["dh"] )/ (mag_map["f"]**2)
+        mag_map["dx"] = float(self.dBx)
+        mag_map["dy"] = float(self.dBy)
+        mag_map["dz"] = float(self.dBz)
+        mag_map["dh"] = (mag_map["x"]*self.dBx + mag_map["y"]*self.dBy)/mag_map["h"]
+        mag_map["df"] = (mag_map["x"]*self.dBx + mag_map["y"]*self.dBy + mag_map["z"]*self.dBz)/mag_map["f"]
+        mag_map["ddec"] = 180/math.pi * (mag_map["x"]*self.dBy - mag_map["y"]*self.dBx)/ (mag_map["h"]**2)
+        mag_map["dinc"] = 180/math.pi * (mag_map["h"]*self.dBz - mag_map["z"]*mag_map["dh"] )/ (mag_map["f"]**2)
 
         return mag_map
 
