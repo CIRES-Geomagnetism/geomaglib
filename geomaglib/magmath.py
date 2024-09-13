@@ -151,6 +151,7 @@ class GeomagElements:
         self.By = By
         self.Bz = Bz
 
+
     def get_Bh(self):
         """
             Compute the magnetic horizontal
