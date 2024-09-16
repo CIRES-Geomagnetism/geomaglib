@@ -2,6 +2,8 @@ import unittest
 import os
 from geomaglib import util, sh_loader, sh_vars, magmath, legendre
 
+from geomaglib import GeomagElements
+
 
 
 class Test_magmath(unittest.TestCase):
@@ -16,6 +18,15 @@ class Test_magmath(unittest.TestCase):
         self.Bdec = [-112.41,  -37.40, 51.30, 0.71, -5.78]
         self.Binc = [88.46, 88.03, 87.48, 63.87, -67.64]
 
+        self.dBx = [69.5, 72.5, -48.7, -33.7, 34.4]
+        self.dBy = [-9.2, 26.3, -20.4, -32.4, 9.2]
+        self.dBz = [20.1, -11.3, 39.7, 101.1, -16.8]
+
+        self.dBdec = [2.6, 1.9, 0.6, -0.1, 0.0]
+        self.dBinc = [0.0, -0.0, 0.0, 0.1, 0.0]
+        self.dBh = [-18.0, 41.6, -46.4, -34.1, 33.3]
+        self.dBf = [19.6, -9.8, 37.7, 75.7, 28.2]
+
         self.tol = 1e-1
 
         self.curr_dir = os.path.dirname(os.path.abspath(__file__))
@@ -25,8 +36,10 @@ class Test_magmath(unittest.TestCase):
 
         N = len(self.Bx)
 
+
         for i in range(N):
-            h = magmath.get_Bh(self.Bx[i], self.By[i])
+            results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i])
+            h = results.get_Bh()
 
             self.assertAlmostEqual(h, self.Bh[i], delta=self.tol)  # add assertion here
 
@@ -36,8 +49,8 @@ class Test_magmath(unittest.TestCase):
         N = len(self.Bf)
 
         for i in range(N):
-            f = magmath.get_Bf(self.Bx[i], self.By[i], self.Bz[i])
-            print(f)
+            results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i])
+            f = results.get_Bf()
             self.assertAlmostEqual(f, self.Bf[i], delta=self.tol)  # add assertion here
 
     def test_get_Bdec(self):
@@ -45,7 +58,8 @@ class Test_magmath(unittest.TestCase):
         N = len(self.Bdec)
 
         for i in range(N):
-            dec = magmath.get_Bdec(self.Bx[i], self.By[i])
+            results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i])
+            dec = results.get_Bdec()
 
             self.assertAlmostEqual(round(dec, 2), self.Bdec[i], delta=0.01)  # add assertion here
 
@@ -54,16 +68,18 @@ class Test_magmath(unittest.TestCase):
         N = len(self.Bdec)
 
         for i in range(N):
-            inc = magmath.get_Binc(self.Bx[i], self.By[i], self.Bz[i])
+            results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i])
+            inc = results.get_Binc()
 
             self.assertAlmostEqual(round(inc, 2), self.Binc[i], delta=0.01)  # add assertion here
 
-    def test_get_allB(self):
+    def test_get_all_base(self):
 
         N = len(self.Bx)
 
         for i in range(N):
-            map = magmath.get_allB(self.Bx[i], self.By[i], self.Bz[i])
+            results = GeomagElements(self.Bx[i], self.By[i], self.Bz[i])
+            map = results.get_all_base()
 
             self.assertAlmostEqual(map["x"], self.Bx[i], delta=self.tol)
             self.assertAlmostEqual(map["y"], self.By[i], delta=self.tol)
@@ -72,6 +88,25 @@ class Test_magmath(unittest.TestCase):
             self.assertAlmostEqual(map["f"], self.Bf[i], delta=self.tol)
             self.assertAlmostEqual(map["dec"], self.Bdec[i], delta=0.01)
             self.assertAlmostEqual(map["inc"], self.Binc[i], delta=0.01)
+
+    def test_get_all(self):
+
+        for i in range(len(self.dBx)):
+            results = GeomagElements(self.Bx[i], self.By[i], self.Bz[i])
+            results.set_sv_vec(self.dBx[i], self.dBy[i], self.dBz[i])
+            map = results.get_all()
+
+            print(map["df"])
+
+            self.assertAlmostEqual(round(map["dh"], 1), self.dBh[i], delta=self.tol)
+
+            self.assertAlmostEqual(round(map["df"], 1), self.dBf[i], delta=0.01)
+
+            self.assertAlmostEqual(round(map["ddec"], 1), self.dBdec[i], delta=0.01)
+            self.assertAlmostEqual(round(map["dinc"], 1), self.dBinc[i], delta=0.01)
+
+
+
     def test_mag_SPH_summation(self):
 
 
@@ -87,6 +122,8 @@ class Test_magmath(unittest.TestCase):
         timly_coef_dict = sh_loader.timely_modify_magnetic_model(coef_dict, dec_year)
         nmax = sh_loader.calc_num_elems_to_sh_degrees(len(coef_dict["g"]))
 
+        print(coef_dict.keys())
+
         # alt = util.alt_to_ellipsoid_height(alt, lat, lon)
         for i in range(N):
             r, theta = util.geod_to_geoc_lat(lats[i], alts[i])
@@ -96,12 +133,20 @@ class Test_magmath(unittest.TestCase):
 
             Leg = legendre.Flattened_Chaos_Legendre1(nmax, colats)
 
-            Bt, Bp, Br = magmath.mag_SPH_summation(nmax, sph_dict, timly_coef_dict, Leg, theta)
+            Bt, Bp, Br = magmath.mag_SPH_summation(nmax, sph_dict, timly_coef_dict["g"], timly_coef_dict["h"], Leg, theta)
             x, y, z = magmath.rotate_magvec(Bt, Bp, Br, theta, lats[i])
+
+            dBt, dBp, dBr = magmath.mag_SPH_summation(nmax, sph_dict, timly_coef_dict["g_sv"], timly_coef_dict["h_sv"], Leg,
+                                                   theta)
+            dx, dy, dz = magmath.rotate_magvec(dBt, dBp, dBr, theta, lats[i])
 
             self.assertAlmostEqual(x, self.Bx[i], delta=self.tol)
             self.assertAlmostEqual(y, self.By[i], delta=self.tol)
             self.assertAlmostEqual(z, self.Bz[i], delta=self.tol)
+
+            self.assertAlmostEqual(dx, self.dBx[i], delta=self.tol)
+            self.assertAlmostEqual(dy, self.dBy[i], delta=self.tol)
+            self.assertAlmostEqual(dz, self.dBz[i], delta=self.tol)
 
     def test_calc_Bp_Pole(self):
         lat = 90
@@ -126,9 +171,9 @@ class Test_magmath(unittest.TestCase):
 
 
         theta_nopole = theta + 1e-3
-        Bt, Bp, Br = magmath.mag_SPH_summation(nmax, sph_dict, timly_coef_dict, Leg, theta_nopole)
+        Bt, Bp, Br = magmath.mag_SPH_summation(nmax, sph_dict, timly_coef_dict["g"], timly_coef_dict["h"], Leg, theta_nopole)
         print(f"Bt: {Bt}, Br: {Br}, Bp: {Bp}")
-        Bpole_t, Bpole_p, Bpole_r = magmath.mag_SPH_summation(nmax, sph_dict, timly_coef_dict, Leg, theta)
+        Bpole_t, Bpole_p, Bpole_r = magmath.mag_SPH_summation(nmax, sph_dict, timly_coef_dict["g_sv"], timly_coef_dict["h_sv"], Leg, theta)
         print(f"Bt: {Bpole_t}, Br: {Bpole_r}, Bp: {Bpole_p}")
 
         #self.assertEqual(Bt, Bpole_t)  # add assertion here

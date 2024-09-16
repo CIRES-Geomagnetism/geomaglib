@@ -1,0 +1,1 @@
+from .magmath import rad2deg, deg2rad, mag_SPH_summation, GeomagElements
