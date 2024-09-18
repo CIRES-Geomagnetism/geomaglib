@@ -3,8 +3,9 @@
 import numpy as np
 import math
 from geomaglib import geoid
-from datetime import datetime
+#from datetime import datetime
 import calendar
+import datetime as dt
     
 def geod_to_geoc_lat(lat,alt,B=None):
     # [r, theta] = geod2geoc(alpha, h);
@@ -109,9 +110,17 @@ def calc_dec_year(year, month,day):
     num_days_year = 365
     if calendar.isleap(year):
         num_days_year = 366
-    date = datetime(year, month, day)
+    date = dt.datetime(year, month, day)
     day_of_year = date.timetuple().tm_yday
     return  year + ((day_of_year -1)/num_days_year)
+
+def decimalYearToDateTime(dyear):
+
+    beginYear = dt.datetime(int(dyear),1,1)
+    yearFrac = dyear - int(dyear)
+    numDays = (dt.date(int(dyear)+1,1,1)-dt.date(int(dyear),1,1)).days
+    theDate = dt.timedelta(days=yearFrac*numDays) + beginYear
+    return theDate.year, theDate.month, theDate.day, theDate.hour, theDate.minute
 
 
 
