@@ -7,7 +7,7 @@ import math
 # Add the parent directory to the system path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from src import util
+from geomaglib import util
 
 class TestUtil(unittest.TestCase):
 
@@ -48,7 +48,16 @@ class TestUtil(unittest.TestCase):
         self.assertAlmostEqual(util.calc_dec_year(2011,12,31),2011.99726027397,places=10)
         self.assertAlmostEqual(util.calc_dec_year(1900,3,13),1900.19452054794,places=10)
 
+    def test_jd2000(self):
 
+        year = 2024
+        month = 12
+        day = 31
+        ut = 12
+        minutes = 30
+        jd = util.jd2000(year, month, day, ut, minutes)
+
+        self.assertAlmostEqual(jd, 9131.52083333, places=6)
 
 
 

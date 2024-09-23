@@ -62,7 +62,6 @@ def mag_SPH_summation(nmax, sph, g, h, Leg, geoc_lat) -> tuple:
                 continue
             gidx = int(n * (n + 1) / 2 + m)
 
-
             Bt -= sph["relative_radius_power"][n] * (
                     g[gidx] * sph["cos_mlon"][m] + h[gidx] * sph["sin_mlon"][m]) * legdP[
                       pidx]
@@ -146,20 +145,14 @@ def rotate_magvec(Bt, Bp, Br, geoc_lat, geod_lat):
 
 class GeomagElements:
 
-    def __init__(self, Bx, By, Bz):
+    def __init__(self, Bx, By, Bz, dBx = None, dBy = None, dBz = None):
         self.Bx = Bx
         self.By = By
         self.Bz = Bz
 
-        self.dBx = None
-        self.dBy = None
-        self.dBz = None
-
-    def set_sv_vec(self, dx, dy, dz):
-
-        self.dBx = dx
-        self.dBy = dy
-        self.dBz = dz
+        self.dBx = dBx
+        self.dBy = dBy
+        self.dBz = dBz
 
 
     def get_Bh(self):
@@ -221,17 +214,42 @@ class GeomagElements:
         return mag_map
 
     def get_all(self) -> dict:
+        mag_map = {}
 
-        mag_map = self.get_all_base()
+        mag_map["x"] = float(self.Bx)
+        mag_map["y"] = float(self.By)
+        mag_map["z"] = float(self.Bz)
+        mag_map["h"] = float(self.get_Bh())
+        mag_map["f"] = float(self.get_Bf())
+        mag_map["dec"] = float(self.get_Bdec())
+        mag_map["inc"] = float(self.get_Binc())
+
 
         mag_map["dx"] = float(self.dBx)
         mag_map["dy"] = float(self.dBy)
         mag_map["dz"] = float(self.dBz)
-        mag_map["dh"] = (mag_map["x"]*self.dBx + mag_map["y"]*self.dBy)/mag_map["h"]
-        mag_map["df"] = (mag_map["x"]*self.dBx + mag_map["y"]*self.dBy + mag_map["z"]*self.dBz)/mag_map["f"]
-        mag_map["ddec"] = 180/math.pi * (mag_map["x"]*self.dBy - mag_map["y"]*self.dBx)/ (mag_map["h"]**2)
-        mag_map["dinc"] = 180/math.pi * (mag_map["h"]*self.dBz - mag_map["z"]*mag_map["dh"] )/ (mag_map["f"]**2)
+        mag_map["dh"] = (mag_map["x"] * self.dBx + mag_map["y"] * self.dBy) / mag_map["h"]
+        mag_map["df"] = (mag_map["x"] * self.dBx + mag_map["y"] * self.dBy + mag_map["z"] * self.dBz) / mag_map["f"]
+        mag_map["ddec"] = 180 / math.pi * (mag_map["x"] * self.dBy - mag_map["y"] * self.dBx) / (mag_map["h"] ** 2)
+        mag_map["dinc"] = 180 / math.pi * (mag_map["h"] * self.dBz - mag_map["z"] * mag_map["dh"]) / (
+                        mag_map["f"] ** 2)
 
         return mag_map
 
+    def get_dBh(self):
+        h = self.get_Bh()
+        return (self.Bx * self.dBx + self.By * self.dBy) / h
 
+    def get_dBf(self):
+        f = self.get_Bf()
+        return (self.Bx * self.dBx + self.By * self.dBy + self.Bz * self.dBz) / f
+
+    def get_dBdec(self):
+        h = self.get_Bh()
+        return 180 / math.pi * (self.Bx * self.dBy - self.By * self.dBx) / (h ** 2)
+
+    def get_dBinc(self):
+        h = self.get_Bh()
+        f = self.get_Bf()
+        dh = (self.Bx * self.dBx + self.By * self.dBy) / h
+        return 180 / math.pi * (h * self.dBz - self.Bz * dh) / (f ** 2)

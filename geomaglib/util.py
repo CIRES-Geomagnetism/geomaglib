@@ -122,9 +122,15 @@ def decimalYearToDateTime(dyear):
     theDate = dt.timedelta(days=yearFrac*numDays) + beginYear
     return theDate.year, theDate.month, theDate.day, theDate.hour, theDate.minute
 
+def jd2000(year, month, day, ut, minutes):
 
+    offset = dt.datetime(2000,1,1)
 
+    diff = dt.datetime(year, month, day, ut, minutes) - offset
 
+    total_days = diff.days + diff.seconds / (3600.0 * 24)
+
+    return total_days
 
 
 

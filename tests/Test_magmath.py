@@ -1,5 +1,6 @@
 import unittest
 import os
+import math
 from geomaglib import util, sh_loader, sh_vars, magmath, legendre
 
 from geomaglib import GeomagElements
@@ -44,6 +45,17 @@ class Test_magmath(unittest.TestCase):
             self.assertAlmostEqual(h, self.Bh[i], delta=self.tol)  # add assertion here
 
 
+    def test_get_dBh(self):
+
+        N = len(self.Bx)
+
+
+        for i in range(N):
+            results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i], self.dBx[i], self.dBy[i], self.dBz[i])
+
+            dh = results.get_dBh()
+
+            self.assertAlmostEqual(dh, self.dBh[i], delta=self.tol)  # add assertion here
     def test_get_Bf(self):
 
         N = len(self.Bf)
@@ -51,7 +63,17 @@ class Test_magmath(unittest.TestCase):
         for i in range(N):
             results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i])
             f = results.get_Bf()
-            self.assertAlmostEqual(f, self.Bf[i], delta=self.tol)  # add assertion here
+            self.assertAlmostEqual(f, self.dBf[i], delta=self.tol)  # add assertion here
+
+    def test_get_dBf(self):
+
+        N = len(self.Bf)
+
+        for i in range(N):
+            results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i], self.dBx[i], self.dBy[i], self.dBz[i])
+            df = results.get_dBf()
+            print(math.fabs(df - self.dBf[i]))
+            self.assertAlmostEqual(df, self.dBf[i], delta=self.tol)  # add assertion here
 
     def test_get_Bdec(self):
 
@@ -63,15 +85,35 @@ class Test_magmath(unittest.TestCase):
 
             self.assertAlmostEqual(round(dec, 2), self.Bdec[i], delta=0.01)  # add assertion here
 
+    def test_get_dBdec(self):
+
+        N = len(self.Bdec)
+
+        for i in range(N):
+            results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i], self.dBx[i], self.dBy[i], self.dBz[i])
+            ddec = results.get_dBdec()
+
+            self.assertAlmostEqual(round(ddec, 1), self.dBdec[i], delta=0.01)  # add assertion here
+
     def test_get_Binc(self):
 
         N = len(self.Bdec)
 
         for i in range(N):
             results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i])
-            inc = results.get_Binc()
+            dinc = results.get_Binc()
 
-            self.assertAlmostEqual(round(inc, 2), self.Binc[i], delta=0.01)  # add assertion here
+            self.assertAlmostEqual(round(dinc, 2), self.Binc[i], delta=0.01)  # add assertion here
+
+    def test_get_dBinc(self):
+
+        N = len(self.Bdec)
+
+        for i in range(N):
+            results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i], self.dBx[i], self.dBy[i], self.dBz[i])
+            dinc = results.get_dBinc()
+
+            self.assertAlmostEqual(round(dinc, 1), self.dBinc[i], delta=0.01)  # add assertion here
 
     def test_get_all_base(self):
 
@@ -92,8 +134,8 @@ class Test_magmath(unittest.TestCase):
     def test_get_all(self):
 
         for i in range(len(self.dBx)):
-            results = GeomagElements(self.Bx[i], self.By[i], self.Bz[i])
-            results.set_sv_vec(self.dBx[i], self.dBy[i], self.dBz[i])
+            results = GeomagElements(self.Bx[i], self.By[i], self.Bz[i], self.dBx[i], self.dBy[i], self.dBz[i])
+
             map = results.get_all()
 
             print(map["df"])
