@@ -213,7 +213,7 @@ class GeomagElements:
 
         return mag_map
 
-    def get_all(self) -> dict:
+    def get_all(self) -> dict[str, float]:
         mag_map = {}
 
         mag_map["x"] = float(self.Bx)
