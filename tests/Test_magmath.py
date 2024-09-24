@@ -138,7 +138,6 @@ class Test_magmath(unittest.TestCase):
 
             map = results.get_all()
 
-            print(map)
 
             self.assertAlmostEqual(round(map["dh"], 1), self.dBh[i], delta=self.tol)
 
