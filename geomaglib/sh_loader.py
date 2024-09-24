@@ -2,7 +2,7 @@ import math
 import copy
 
 
-def calc_sh_degrees_to_num_elems(sh_degrees):
+def calc_sh_degrees_to_num_elems(sh_degrees: int) -> int:
     """
     Gives you the number of elements from the number of
     sphereical harmonic degree
@@ -16,7 +16,7 @@ def calc_sh_degrees_to_num_elems(sh_degrees):
     return int(sh_degrees * (sh_degrees + 3) / 2) + 1
 
 
-def calc_num_elems_to_sh_degrees(num_elems):
+def calc_num_elems_to_sh_degrees(num_elems: int) -> int:
     """
     Gives you the number of spherical harmonic degrees from the total number
     of elements

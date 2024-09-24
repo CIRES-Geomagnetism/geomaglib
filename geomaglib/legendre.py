@@ -2,7 +2,7 @@ import math
 import numpy as np
 import warnings
 
-def Flattened_Chaos_Legendre1(nmax, theta, epsilon=1e-6, silence_warnings=False) -> list:
+def Flattened_Chaos_Legendre1(nmax: int, theta: float, epsilon: float = 1e-6, silence_warnings: bool = False) -> list[list[float], list[float]]:
     """
     Inputs:
     nmax (int): maximum degree of legendre polynomial (all orders for each degree are calculated)

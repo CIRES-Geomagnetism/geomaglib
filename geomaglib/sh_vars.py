@@ -1,6 +1,6 @@
 import math
 
-def comp_sh_vars(lon, r, theta, sh_degrees):
+def comp_sh_vars(lon: float, r: float, theta: float, sh_degrees: int) -> dict[str, list[float]]:
     """
     Computes Spherical Variabale and put the results in a dictionary
     variable computed are (a/r) ^ (n+2), cos_m(lon), and sin_m(lon)

@@ -1,4 +1,6 @@
 import math
+from typing import Optional, Tuple
+
 import numpy as np
 
 
@@ -18,7 +20,19 @@ def deg2rad(deg):
     return deg * math.pi / 180.0
 
 
-def calc_Bp_Pole(nmax, geoc_lat, sph, g, h):
+def calc_Bp_Pole(nmax: int, geoc_lat: float, sph:dict[str, list[float]], g: list[float], h: list[float]) -> float:
+    """
+    Calculate the B_phi magnetic elements at pole
+    Args:
+        nmax: maximum degree
+        geoc_lat: geocentric latitude in degree
+        sph: the dict svaed with spherical harmonic varialbles like (a/r) ^ (n+2), cos_m(lon), and sin_m(lon)
+        g: g coefficients
+        h: h coefficients
+
+    Returns:
+
+    """
     PcupS = [0.0] * (nmax + 1)
 
     PcupS[0] = 1.0
@@ -47,7 +61,20 @@ def calc_Bp_Pole(nmax, geoc_lat, sph, g, h):
     return Bp
 
 
-def mag_SPH_summation(nmax, sph, g, h, Leg, geoc_lat) -> tuple:
+def mag_SPH_summation(nmax: int, sph: dict[str, list[float]], g: list[float], h: list[float], Leg: list[list[float]], geoc_lat: float) -> tuple:
+    """
+    Compute the magnetic eelements
+    Args:
+        nmax: max degree
+        sph: the dict svaed with spherical harmonic varialbles like (a/r) ^ (n+2), cos_m(lon), and sin_m(lon)
+        g: g coefficients
+        h: h coefficients
+        Leg: legendre function array. Leg[0] for Plm array; Leg[1] for dPlm array.
+        geoc_lat: geocentric latitude in degree
+
+    Returns:
+
+    """
     Br, Bt, Bp = 0.0, 0.0, 0.0
 
     legP = np.array(Leg[0]).flatten()
@@ -87,6 +114,19 @@ def mag_SPH_summation(nmax, sph, g, h, Leg, geoc_lat) -> tuple:
 
 
 def mag_SPH_summation_alf(nmax, sph, coef_dict, legP, legdP, geoc_lat) -> tuple:
+    """
+    Compute the magnetic elements based on Legendre function from geomag's team C library
+    Args:
+        nmax:
+        sph:
+        coef_dict:
+        legP:
+        legdP:
+        geoc_lat:
+
+    Returns:
+
+    """
     Br, Bt, Bp = 0.0, 0.0, 0.0
 
     for n in range(1, nmax + 1):
@@ -109,21 +149,23 @@ def mag_SPH_summation_alf(nmax, sph, coef_dict, legP, legdP, geoc_lat) -> tuple:
     cos_phi = math.cos(deg2rad(geoc_lat))
 
     if math.fabs(cos_phi) < 1.0e-10:
-        Bp += calc_Bp_Pole(nmax, geoc_lat, sph, coef_dict)
+        Bp += calc_Bp_Pole(nmax, geoc_lat, sph, coef_dict["g"],coef_dict["h"])
     else:
         Bp = Bp / cos_phi
 
     return Bt, Bp, Br
 
 
-def rotate_magvec(Bt, Bp, Br, geoc_lat, geod_lat):
+def rotate_magvec(Bt, Bp, Br, geoc_lat, geod_lat) -> Tuple[float, float, float]:
     """
             Convert magnetic vector from spherical to geodetic
 
             Parameters:
             ___________
 
-            B: magnetic vector based on geocentric
+            Bt: magnetic elements theta
+            Bp: magnetic elements phi
+            Br: magnetic elements radius
             geoc_lat: geocentric latitude
             geod_lat: geeodetic latitude
 
@@ -145,7 +187,17 @@ def rotate_magvec(Bt, Bp, Br, geoc_lat, geod_lat):
 
 class GeomagElements:
 
-    def __init__(self, Bx, By, Bz, dBx = None, dBy = None, dBz = None):
+    def __init__(self, Bx: float, By: float, Bz: float, dBx: Optional[float] = None, dBy: Optional[float] = None, dBz: Optional[float] = None):
+        """
+        Compute magnetic elements
+        Args:
+            Bx: float type
+            By: float type
+            Bz: float type
+            dBx: float type
+            dBy: float type
+            dBz: float type
+        """
         self.Bx = Bx
         self.By = By
         self.Bz = Bz
@@ -155,52 +207,55 @@ class GeomagElements:
         self.dBz = dBz
 
 
-    def get_Bh(self):
+    def get_Bh(self) -> float:
         """
             Compute the magnetic horizontal
 
-            Parameters:
-            ____________
 
-            B:array the gepdetic magnetic vector
-            B = [Bx, By, Bz]
             Returns:
             ____________
 
-            h:float the magneitc horizontal
+            h: magneitc horizontal elements
 
         """
 
         return math.sqrt(self.Bx ** 2 + self.By ** 2)
 
-    def get_Bf(self):
+    def get_Bf(self) -> float:
         """
             Get the total intensity
-
-            Parameters:
-            ____________
-            B:array the magnetic vector
-
             Returns:
-            f:float the total intensity value
+            f: the total intensity value
             _________
         """
 
         f = math.sqrt(self.Bx ** 2 + self.By ** 2 + self.Bz ** 2)
         return f
 
-    def get_Bdec(self):
+    def get_Bdec(self) -> float:
+        """
+        Get the declination value
+        """
         dec = rad2deg(math.atan2(self.By, self.Bx))
 
         return dec
 
-    def get_Binc(self):
+    def get_Binc(self) -> float:
+        """
+        Get the inclination value
+        Returns:
+
+        """
         Bh = self.get_Bh()
         inc = rad2deg(math.atan2(self.Bz, Bh))
 
         return inc
 
-    def get_all_base(self) -> dict:
+    def get_all_base(self) -> dict[str, float]:
+        """
+        Get Bx, By, Bz, Bh, Bf, Bdec and Binc in dict
+
+        """
         mag_map = {}
 
         mag_map["x"] = float(self.Bx)
@@ -214,6 +269,13 @@ class GeomagElements:
         return mag_map
 
     def get_all(self) -> dict[str, float]:
+        """
+
+        Returns: all of magnetic elements:
+        Bx, By, Bz, Bh, Bf, Bdec, Binc,
+        dBx, dBy, dBz, dBh, dBf, dBdec and dBinc in dict
+
+        """
         mag_map = {}
 
         mag_map["x"] = self.Bx
@@ -237,19 +299,34 @@ class GeomagElements:
 
         return mag_map
 
-    def get_dBh(self):
+    def get_dBh(self) -> float:
+        """
+
+        Returns: delta horizontal
+
+        """
         h = self.get_Bh()
         return (self.Bx * self.dBx + self.By * self.dBy) / h
 
-    def get_dBf(self):
+    def get_dBf(self) -> float:
+        """
+        Returns: delta total intensity
+        """
         f = self.get_Bf()
         return (self.Bx * self.dBx + self.By * self.dBy + self.Bz * self.dBz) / f
 
-    def get_dBdec(self):
+    def get_dBdec(self) -> float:
+        """
+        Returns: delta declination value
+        """
         h = self.get_Bh()
         return 180 / math.pi * (self.Bx * self.dBy - self.By * self.dBx) / (h ** 2)
 
-    def get_dBinc(self):
+    def get_dBinc(self) -> float:
+        """
+        Returns: delta inclination value
+
+        """
         h = self.get_Bh()
         f = self.get_Bf()
         dh = (self.Bx * self.dBx + self.By * self.dBy) / h
