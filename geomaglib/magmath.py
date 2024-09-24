@@ -202,9 +202,15 @@ class GeomagElements:
         self.By = float(By)
         self.Bz = float(Bz)
 
-        self.dBx = float(dBx)
-        self.dBy = float(dBy)
-        self.dBz = float(dBz)
+        self.dBx = dBx
+        self.dBy = dBy
+        self.dBz = dBz
+
+        if isinstance(self.dBx, float): self.dBx = float(self.dBx)
+        if isinstance(self.dBy, float): self.dBy = float(self.dBy)
+        if isinstance(self.dBz, float): self.dBz = float(self.dBz)
+
+
 
 
     def get_Bh(self) -> float:
