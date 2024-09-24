@@ -198,13 +198,13 @@ class GeomagElements:
             dBy: float type
             dBz: float type
         """
-        self.Bx = Bx
-        self.By = By
-        self.Bz = Bz
+        self.Bx = float(Bx)
+        self.By = float(By)
+        self.Bz = float(Bz)
 
-        self.dBx = dBx
-        self.dBy = dBy
-        self.dBz = dBz
+        self.dBx = float(dBx)
+        self.dBy = float(dBy)
+        self.dBz = float(dBz)
 
 
     def get_Bh(self) -> float:
@@ -278,11 +278,11 @@ class GeomagElements:
         """
         mag_map = {}
 
-        mag_map["x"] = self.Bx
-        mag_map["y"] = self.By
-        mag_map["z"] = self.Bz
-        h = self.get_Bh()
-        f = self.get_Bf()
+        mag_map["x"] = float(self.Bx)
+        mag_map["y"] = float(self.By)
+        mag_map["z"] = float(self.Bz)
+        h = float(self.get_Bh())
+        f = float(self.get_Bf())
 
         mag_map["h"] = h
         mag_map["f"] = f
