@@ -8,3 +8,4 @@ geomaglib/__pycache__/
 
 tests/.DS_Store
 tests/__pycache__/
+tests/coefs
