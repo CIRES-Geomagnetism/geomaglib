@@ -5,8 +5,8 @@ import unittest
 # Add the parent directory to the system path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from src import util
-from src import sh_vars
+from geomaglib import util
+from geomaglib import sh_vars
 
 class TestUtil(unittest.TestCase):
 
