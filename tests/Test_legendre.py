@@ -56,6 +56,8 @@ class Test_legendre(unittest.TestCase):
                 
                 fidx += 1
 
+
+
         file.close()
         
     def compare_gsl_manoj(self, fP, fdP, gP, gdP, nmax, out_file):
@@ -289,6 +291,42 @@ class Test_legendre(unittest.TestCase):
                 self.assertAlmostEqual(legdP[fidx], -mdPlm[gidx], delta=1e-6)
 
                 fidx += 1
+
+    def test_get_legendre_index(self):
+        """
+        The order of legendre polynomial in Flattened_Chaos_Legendre1()
+        {degree}{order}
+        00 (degree=0, order=0)
+        10
+        20
+        30
+        ...
+        {nmax}0
+        11
+        21
+        ...
+        {nmax}1
+        22
+        32
+        ...
+        Returns:
+
+        """
+        nmax = 12
+        fidx = 1
+
+        for m in range(nmax + 1):
+            for n in range(m, nmax + 1):
+
+                if n == 0:
+                    continue
+
+                idx = legendre.get_legendre_index(n, m, nmax)
+                self.assertEqual(idx, fidx)
+                fidx += 1
+
+
+
 
 
 if __name__ == "__main__":

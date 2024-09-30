@@ -4,7 +4,7 @@ from typing import Union
 import numpy as np
 import warnings
 
-def Flattened_Chaos_Legendre1(nmax: int, theta: Union[float, list[float]], epsilon: float = 1e-6, silence_warnings: bool = False) -> list[list[float], list[float]]:
+def Flattened_Chaos_Legendre1(nmax: int, theta: Union[float, list[float]], epsilon: float = 1e-6, silence_warnings: bool = False) -> list[list[float]]:
     """
     Inputs:
     nmax (int): maximum degree of legendre polynomial (all orders for each degree are calculated)
@@ -72,3 +72,37 @@ def Flattened_Chaos_Legendre1(nmax: int, theta: Union[float, list[float]], epsil
             dPnm.append((dPnm_diag_tmp * rootn[m + 1] * np.sqrt(0.5)))
 
     return [Pnm, dPnm]
+
+def get_legendre_index(n: int, m:int, nmax: int) -> int:
+    """
+    Get the index of Flattened_Chaos_Legendre1
+    Args:
+        n: degree number
+        m: order number
+        nmax: maximum degree or order
+
+    Returns:
+        The index of legendre polynomial value in Flattened_Chaos_Legendre1
+
+    The order of legendre polynomial in Flattened_Chaos_Legendre1()
+        {degree}{order}
+        00 (degree=0, order=0)
+        10
+        20
+        30
+        ...
+        {nmax}0
+        11
+        21
+        ...
+        {nmax}1
+        22
+        32
+        ...
+
+    """
+    if m == 0:
+        return n
+    else:
+        return int(m * ((nmax + 1) + (nmax + 1 - (m - 1))) // 2 + (n - m))
+
