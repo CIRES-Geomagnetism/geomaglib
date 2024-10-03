@@ -321,7 +321,7 @@ class Test_legendre(unittest.TestCase):
                 if n == 0:
                     continue
 
-                idx = legendre.get_legendre_index(n, m, nmax)
+                idx = legendre.get_index(n, m, nmax)
                 self.assertEqual(idx, fidx)
                 fidx += 1
 

@@ -73,7 +73,7 @@ def Flattened_Chaos_Legendre1(nmax: int, theta: Union[float, list[float]], epsil
 
     return [Pnm, dPnm]
 
-def get_legendre_index(n: int, m:int, nmax: int) -> int:
+def get_index(n: int, m:int, nmax: int) -> int:
     """
     Get the index of Flattened_Chaos_Legendre1
     Args:
