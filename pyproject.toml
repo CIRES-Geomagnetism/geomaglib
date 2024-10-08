@@ -1,6 +1,6 @@
 [project]
 name = "geomaglib"
-version = "0.4.4"
+version = "0.5.4"
 description = "The core library for building geomag model."
 authors = [{ name = "Li-Yin Young", email = "liyin.young@noaa.gov" }]
 classifiers = [
