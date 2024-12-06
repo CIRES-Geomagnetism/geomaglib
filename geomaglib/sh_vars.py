@@ -1,4 +1,4 @@
-import numpy as np
+import numpy as np 
 def comp_sh_vars(lon: float, r: float, theta: float, sh_degrees: int) -> dict[str, list[float]]:
     """
     Computes Spherical Variabale and put the results in a dictionary

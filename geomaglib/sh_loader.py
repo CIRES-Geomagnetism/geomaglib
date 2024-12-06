@@ -1,4 +1,5 @@
 import math
+import numpy as np
 import copy
 
 def calc_sh_degrees_to_num_elems(sh_degrees):
@@ -25,7 +26,7 @@ def calc_num_elems_to_sh_degrees(num_elems):
     Returns:
     int: The number of spherical harmonic degrees
     """
-    return int((-3+math.sqrt(8*num_elems + 1) )/2)
+    return int((-3+np.sqrt(8*num_elems + 1) )/2)
 
 def load_coef(filename, skip_two_columns = False, load_sv = True,  end_degree=None, load_year=None):
     """

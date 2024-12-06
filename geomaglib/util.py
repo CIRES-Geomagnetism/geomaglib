@@ -60,11 +60,11 @@ def alt_to_ellipsoid_height(alt: float, lat: float, lon: float) -> float:
 
     offset_y = (90 - lat) * geoid.geoid["scale_factor"]
 
-    post_x = int(math.floor(offset_x))
+    post_x = int(np.floor(offset_x))
     if post_x + 1 == geoid.geoid["cols"]:
         post_x = post_x - 1
 
-    post_y = int(math.floor(offset_y))
+    post_y = int(np.floor(offset_y))
     if post_y + 1 == geoid.geoid["rows"]:
         post_y = post_y - 1
 
