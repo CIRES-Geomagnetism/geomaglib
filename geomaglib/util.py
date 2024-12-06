@@ -32,7 +32,7 @@ def geod_to_geoc_lat(lat: float, alt: float) -> tuple[float, float]:
     cos_alpha_2 = np.cos(lat_rad) ** 2
     tmp = np.multiply(alt, np.sqrt(np.dot(a ** 2, cos_alpha_2) + np.dot(b ** 2, sin_alpha_2)))
     beta = np.arctan(np.multiply((tmp + b ** 2) / (tmp + a ** 2), np.tan(lat_rad)))
-    theta = math.degrees(beta)
+    theta = np.rad2deg(beta)
     r = np.sqrt(alt ** 2 + np.dot(2, tmp) + np.dot(a ** 2, (1 - np.dot((1 - (b / a) ** 4), sin_alpha_2))) / (
                 1 - np.dot((1 - (b / a) ** 2), sin_alpha_2)))
 

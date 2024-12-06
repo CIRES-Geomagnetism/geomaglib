@@ -1,5 +1,5 @@
 import math
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 import numpy as np
 
@@ -40,13 +40,13 @@ def calc_Bp_Pole(nmax: int, geoc_lat: float, sph:dict[str, list[float]], g: list
     schmidtQuasiNorm1 = 1.0
 
     Bp = 0.0
-    sin_phi = math.sin(deg2rad(geoc_lat))
+    sin_phi = np.sin(deg2rad(geoc_lat))
 
     for n in range(1, nmax):
         idx = int(n * (n + 1) / 2 + 1)
 
         schmidtQuasiNorm2 = schmidtQuasiNorm1 * (2 * n - 1) / n
-        schmidtQuasiNorm3 = schmidtQuasiNorm2 * math.sqrt((n * 2) / (n + 1))
+        schmidtQuasiNorm3 = schmidtQuasiNorm2 * np.sqrt((n * 2) / (n + 1))
         schmidtQuasiNorm1 = schmidtQuasiNorm2
 
         if n == 1:
@@ -101,12 +101,16 @@ def mag_SPH_summation(nmax: int, sph: dict[str, list[float]], g: list[float], h:
                           n + 1) * legP[pidx]
             pidx += 1
 
-    cos_phi = math.cos(deg2rad(geoc_lat))
-
-    if math.fabs(cos_phi) < 1.0e-10:
-        Bp += calc_Bp_Pole(nmax, geoc_lat, sph, g, h)
-    else:
-        Bp = Bp / cos_phi
+    cos_phi = np.cos(deg2rad(geoc_lat))
+    """This isn't vectorized"""
+    # if math.fabs(cos_phi) < 1.0e-10:
+    #     Bp += calc_Bp_Pole(nmax, geoc_lat, sph, g, h)
+    # else:
+    #     Bp = Bp / cos_phi
+    """This is:"""
+    mask = np.abs(cos_phi) < 1.0e-10 
+    # Apply calc_Bp_Pole where the mask is True, otherwise perform division
+    Bp = np.where(mask, Bp + calc_Bp_Pole(nmax, geoc_lat, sph, g, h), Bp / cos_phi)
 
     Bt = -Bt
 
@@ -146,12 +150,17 @@ def mag_SPH_summation_alf(nmax, sph, coef_dict, legP, legdP, geoc_lat) -> tuple:
                     coef_dict["g"][gidx] * sph["cos_mlon"][m] + coef_dict["h"][gidx] * sph["sin_mlon"][m]) * (
                           n + 1) * legP[gidx]
 
-    cos_phi = math.cos(deg2rad(geoc_lat))
+    cos_phi = np.cos(deg2rad(geoc_lat))
+    """non-vectorized"""
+    # if math.fabs(cos_phi) < 1.0e-10:
+    #     Bp += calc_Bp_Pole(nmax, geoc_lat, sph, coef_dict["g"],coef_dict["h"])
+    # else:
+    #     Bp = Bp / cos_phi
+    """vectorized"""
+    mask = np.abs(cos_phi) < 1.0e-10 
+    # Apply calc_Bp_Pole where the mask is True, otherwise perform division
+    Bp = np.where(mask, Bp + calc_Bp_Pole(nmax, geoc_lat, sph, g, h), Bp / cos_phi)
 
-    if math.fabs(cos_phi) < 1.0e-10:
-        Bp += calc_Bp_Pole(nmax, geoc_lat, sph, coef_dict["g"],coef_dict["h"])
-    else:
-        Bp = Bp / cos_phi
 
     return Bt, Bp, Br
 
@@ -178,38 +187,39 @@ def rotate_magvec(Bt, Bp, Br, geoc_lat, geod_lat) -> Tuple[float, float, float]:
 
     psi = (math.pi / 180.0) * (geoc_lat - geod_lat)
 
-    Bz = Bt * math.sin(psi) + Br * math.cos(psi)
-    Bx = Bt * math.cos(psi) - Br * math.sin(psi)
+    Bz = Bt * np.sin(psi) + Br * np.cos(psi)
+    Bx = Bt * np.cos(psi) - Br * np.sin(psi)
     By = Bp
 
     return Bx, By, Bz
 
 
 class GeomagElements:
-
-    def __init__(self, Bx: float, By: float, Bz: float, dBx: Optional[float] = None, dBy: Optional[float] = None, dBz: Optional[float] = None):
+    def __init__(self, 
+                 Bx: Union[float, np.ndarray], 
+                 By: Union[float, np.ndarray], 
+                 Bz: Union[float, np.ndarray], 
+                 dBx: Optional[Union[float, np.ndarray]] = None, 
+                 dBy: Optional[Union[float, np.ndarray]] = None, 
+                 dBz: Optional[Union[float, np.ndarray]] = None):
         """
-        Compute magnetic elements
+        Compute magnetic elements.
+        
         Args:
-            Bx: float type
-            By: float type
-            Bz: float type
-            dBx: float type
-            dBy: float type
-            dBz: float type
+            Bx: float or np.ndarray
+            By: float or np.ndarray
+            Bz: float or np.ndarray
+            dBx: Optional float or np.ndarray
+            dBy: Optional float or np.ndarray
+            dBz: Optional float or np.ndarray
         """
-        self.Bx = float(Bx)
-        self.By = float(By)
-        self.Bz = float(Bz)
+        self.Bx = np.asarray(Bx, dtype=np.float64)
+        self.By = np.asarray(By, dtype=np.float64)
+        self.Bz = np.asarray(Bz, dtype=np.float64)
 
-        self.dBx = dBx
-        self.dBy = dBy
-        self.dBz = dBz
-
-        if isinstance(self.dBx, float): self.dBx = float(self.dBx)
-        if isinstance(self.dBy, float): self.dBy = float(self.dBy)
-        if isinstance(self.dBz, float): self.dBz = float(self.dBz)
-
+        self.dBx = np.asarray(dBx, dtype=np.float64) if dBx is not None else None
+        self.dBy = np.asarray(dBy, dtype=np.float64) if dBy is not None else None
+        self.dBz = np.asarray(dBz, dtype=np.float64) if dBz is not None else None
 
 
 
@@ -225,7 +235,7 @@ class GeomagElements:
 
         """
 
-        return math.sqrt(self.Bx ** 2 + self.By ** 2)
+        return np.sqrt(self.Bx ** 2 + self.By ** 2)
 
     def get_Bf(self) -> float:
         """
@@ -235,14 +245,14 @@ class GeomagElements:
             _________
         """
 
-        f = math.sqrt(self.Bx ** 2 + self.By ** 2 + self.Bz ** 2)
+        f = np.sqrt(self.Bx ** 2 + self.By ** 2 + self.Bz ** 2)
         return f
 
     def get_Bdec(self) -> float:
         """
         Get the declination value
         """
-        dec = rad2deg(math.atan2(self.By, self.Bx))
+        dec = rad2deg(np.atan2(self.By, self.Bx))
 
         return dec
 
@@ -253,7 +263,7 @@ class GeomagElements:
 
         """
         Bh = self.get_Bh()
-        inc = rad2deg(math.atan2(self.Bz, Bh))
+        inc = rad2deg(np.atan2(self.Bz, Bh))
 
         return inc
 
@@ -262,16 +272,16 @@ class GeomagElements:
         Get Bx, By, Bz, Bh, Bf, Bdec and Binc in dict
 
         """
+    
         mag_map = {}
 
-        mag_map["x"] = float(self.Bx)
-        mag_map["y"] = float(self.By)
-        mag_map["z"] = float(self.Bz)
-        mag_map["h"] = float(self.get_Bh())
-        mag_map["f"] = float(self.get_Bf())
-        mag_map["dec"] = float(self.get_Bdec())
-        mag_map["inc"] = float(self.get_Binc())
-
+        mag_map["x"] = np.asarray(self.Bx, dtype=np.float64)
+        mag_map["y"] = np.asarray(self.By, dtype=np.float64)
+        mag_map["z"] = np.asarray(self.Bz, dtype=np.float64)
+        mag_map["h"] = np.asarray(self.get_Bh(), dtype=np.float64)
+        mag_map["f"] = np.asarray(self.get_Bf(), dtype=np.float64)
+        mag_map["dec"] = np.asarray(self.get_Bdec(), dtype=np.float64)
+        mag_map["inc"] = np.asarray(self.get_Binc(), dtype=np.float64)
         return mag_map
 
     def get_all(self) -> dict[str, float]:
@@ -284,11 +294,11 @@ class GeomagElements:
         """
         mag_map = {}
 
-        mag_map["x"] = float(self.Bx)
-        mag_map["y"] = float(self.By)
-        mag_map["z"] = float(self.Bz)
-        h = float(self.get_Bh())
-        f = float(self.get_Bf())
+        mag_map["x"] = np.asarray(self.Bx, dtype=np.float64)
+        mag_map["y"] = np.asarray(self.By, dtype=np.float64)
+        mag_map["z"] = np.asarray(self.Bz, dtype=np.float64)
+        h = np.asarray(self.get_Bh(), dtype=np.float64)
+        f = np.asarray(self.get_Bf(), dtype=np.float64)
 
         mag_map["h"] = h
         mag_map["f"] = f
@@ -301,7 +311,7 @@ class GeomagElements:
         mag_map["dh"] = (self.Bx * self.dBx + self.By * self.dBy) / h
         mag_map["df"] = (self.Bx * self.dBx + self.By * self.dBy + mag_map["z"] * self.dBz) / mag_map["f"]
         mag_map["ddec"] = 180 / math.pi * (self.Bx * self.dBy - self.By * self.dBx) / (h ** 2)
-        mag_map["dinc"] = float(180 / math.pi * (h * self.dBz - self.Bz * mag_map["dh"])) / (f ** 2)
+        mag_map["dinc"] = np.asarray((180 / math.pi * (h * self.dBz - self.Bz * mag_map["dh"])) / (f ** 2), dtype=np.float64)
 
         return mag_map
 
