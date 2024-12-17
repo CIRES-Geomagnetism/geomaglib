@@ -90,7 +90,7 @@ def alt_to_ellipsoid_height(alt: float, lat: float, lon: float) -> float:
     return ellipsoid_height
 
 
-def calc_dec_year(year: int, month: int, day:int ) -> float:
+def calc_dec_year(year: np.ndarray, month: np.ndarray, day:np.ndarray ) -> float:
     """
     Takes year, month, and day and calculates the decimal year from those inputs
 
@@ -103,12 +103,27 @@ def calc_dec_year(year: int, month: int, day:int ) -> float:
     (float): The decimal year
 
     """
-    num_days_year = 365
-    if calendar.isleap(year):
-        num_days_year = 366
-    date = dt.datetime(year, month, day)
-    day_of_year = date.timetuple().tm_yday
-    return year + ((day_of_year - 1) / num_days_year)
+    dec_year = []
+    # if(year.size == 1):
+    #     num_days_year = 365
+    #     if calendar.isleap(year):
+    #         num_days_year = 366
+        
+    #     date = dt.datetime(year, month, day)
+    #     day_of_year = date.timetuple().tm_yday
+    #     dec_year.append(year + ((day_of_year - 1) / num_days_year))
+    # else:
+        
+    for i in range(0,year.size):
+        num_days_year = 365
+        if calendar.isleap(year[i]):
+            num_days_year = 366
+        
+        date = dt.datetime(year[i], month[i], day[i])
+        day_of_year = date.timetuple().tm_yday
+        dec_year.append(year[i] + ((day_of_year - 1) / num_days_year))
+
+    return np.array(dec_year)
 def decimalYearToDateTime(dyear:float) ->tuple[float, float, float, float, float]:
 
     beginYear = dt.datetime(int(dyear),1,1)
@@ -138,7 +153,3 @@ def jd2000(year: int, month: int, day:int , ut: int, minutes: int) -> float:
     total_days = diff.days + diff.seconds / (3600.0 * 24)
 
     return total_days
-
-
-
-
