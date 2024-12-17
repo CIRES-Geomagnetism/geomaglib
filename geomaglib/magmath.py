@@ -75,11 +75,12 @@ def mag_SPH_summation(nmax: int, sph: dict[str, list[float]], g: list[float], h:
     Returns:
 
     """
-    Br, Bt, Bp = 0.0, 0.0, 0.0
+    Br, Bt, Bp = np.zeros(len(geoc_lat)),np.zeros(len(geoc_lat)),np.zeros(len(geoc_lat))
 
-    legP = np.array(Leg[0]).flatten()
-    legdP = np.array(Leg[1]).flatten()
-
+    
+    legP = np.array(Leg[0])
+    legdP = np.array(Leg[1])
+    
     pidx = 1
 
     for m in range(nmax + 1):
@@ -88,7 +89,7 @@ def mag_SPH_summation(nmax: int, sph: dict[str, list[float]], g: list[float], h:
             if n == 0:
                 continue
             gidx = int(n * (n + 1) / 2 + m)
-
+            # print('hello there', sph["relative_radius_power"][n], np.shape(sph["relative_radius_power"][n]))
             Bt -= sph["relative_radius_power"][n] * (
                     g[gidx] * sph["cos_mlon"][m] + h[gidx] * sph["sin_mlon"][m]) * legdP[
                       pidx]
@@ -102,12 +103,7 @@ def mag_SPH_summation(nmax: int, sph: dict[str, list[float]], g: list[float], h:
             pidx += 1
 
     cos_phi = np.cos(deg2rad(geoc_lat))
-    """This isn't vectorized"""
-    # if math.fabs(cos_phi) < 1.0e-10:
-    #     Bp += calc_Bp_Pole(nmax, geoc_lat, sph, g, h)
-    # else:
-    #     Bp = Bp / cos_phi
-    """This is:"""
+
     mask = np.abs(cos_phi) < 1.0e-10 
     # Apply calc_Bp_Pole where the mask is True, otherwise perform division
     Bp = np.where(mask, Bp + calc_Bp_Pole(nmax, geoc_lat, sph, g, h), Bp / cos_phi)
@@ -151,12 +147,7 @@ def mag_SPH_summation_alf(nmax, sph, coef_dict, legP, legdP, geoc_lat) -> tuple:
                           n + 1) * legP[gidx]
 
     cos_phi = np.cos(deg2rad(geoc_lat))
-    """non-vectorized"""
-    # if math.fabs(cos_phi) < 1.0e-10:
-    #     Bp += calc_Bp_Pole(nmax, geoc_lat, sph, coef_dict["g"],coef_dict["h"])
-    # else:
-    #     Bp = Bp / cos_phi
-    """vectorized"""
+
     mask = np.abs(cos_phi) < 1.0e-10 
     # Apply calc_Bp_Pole where the mask is True, otherwise perform division
     Bp = np.where(mask, Bp + calc_Bp_Pole(nmax, geoc_lat, sph, g, h), Bp / cos_phi)
