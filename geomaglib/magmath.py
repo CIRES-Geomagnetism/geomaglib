@@ -243,7 +243,7 @@ class GeomagElements:
         """
         Get the declination value
         """
-        dec = rad2deg(np.atan2(self.By, self.Bx))
+        dec = rad2deg(np.arctan2(self.By, self.Bx))
 
         return dec
 
@@ -254,7 +254,7 @@ class GeomagElements:
 
         """
         Bh = self.get_Bh()
-        inc = rad2deg(np.atan2(self.Bz, Bh))
+        inc = rad2deg(np.arctan2(self.Bz, Bh))
 
         return inc
 
