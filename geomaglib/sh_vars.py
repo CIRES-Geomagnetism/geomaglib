@@ -1,5 +1,4 @@
-import math
-
+import numpy as np 
 def comp_sh_vars(lon: float, r: float, theta: float, sh_degrees: int) -> dict[str, list[float]]:
     """
     Computes Spherical Variabale and put the results in a dictionary
@@ -17,8 +16,8 @@ def comp_sh_vars(lon: float, r: float, theta: float, sh_degrees: int) -> dict[st
     ellip_re = 6371.2 # Mean radius of ellipsoid
 
     sh_vars = {}
-    cos_lon = math.cos(math.radians(lon))
-    sin_lon = math.sin(math.radians(lon))
+    cos_lon = np.cos(np.radians(lon))
+    sin_lon = np.sin(np.radians(lon))
 
     sh_vars["relative_radius_power"] = []
 
