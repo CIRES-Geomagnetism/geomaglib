@@ -48,6 +48,19 @@ class TestUtil(unittest.TestCase):
         self.assertAlmostEqual(util.calc_dec_year(2011,12,31),2011.99726027397,places=10)
         self.assertAlmostEqual(util.calc_dec_year(1900,3,13),1900.19452054794,places=10)
 
+    def test_calc_dec_year_arr(self):
+
+        years = np.array([2024, 2023, 2022, 2021, 2020, 2015, 2011, 1900])
+        months = np.array([5, 5, 2, 8, 2, 10, 12, 3])
+        days = np.array([20, 20, 11, 30, 11, 1, 31, 13])
+
+        dyears = util.calc_dec_year_array(years, months, days)
+
+
+        for i in range(len(years)):
+            self.assertAlmostEqual(dyears[i], util.calc_dec_year(years[i], months[i], days[i]), places=10)
+
+
     def test_jd2000(self):
 
         year = 2024
