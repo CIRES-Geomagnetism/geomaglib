@@ -85,7 +85,9 @@ def mag_SPH_summation(nmax: int, sph: dict[str, list[float]], g: list[float], h:
 
     for m in range(nmax + 1):
         # degree
+
         for n in range(m, nmax + 1):
+
             if n == 0:
                 continue
             gidx = int(n * (n + 1) / 2 + m)

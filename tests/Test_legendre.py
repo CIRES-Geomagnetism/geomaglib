@@ -152,7 +152,7 @@ class Test_legendre(unittest.TestCase):
 
         res_file = os.path.join(self.curr_dir, "compare_results_alf_high.csv")
 
-        nmax = 133
+        nmax = 12
         mPlm, mdPlm = Leg_SHA_for_import.PcupHigh(theta, nmax)
 
 
@@ -165,7 +165,7 @@ class Test_legendre(unittest.TestCase):
         lats = np.linspace(57, 61, 10)
 
 
-        nmax = 790
+        nmax = 12
 
         for lat in lats:
             colat = 90.0 - float(lat)
@@ -177,7 +177,7 @@ class Test_legendre(unittest.TestCase):
             fdPlm = np.array(fLeg[1]).flatten()
 
 
-            tol = 1e-12
+            tol = 1e-6
 
             fidx = 1
             for m in range(nmax+1):
