@@ -28,6 +28,7 @@ class TestUtil(unittest.TestCase):
         self._test_single_geod_to_geoc_conv(10.2,20,6397.47181557818,10.1333459251)
     
     def test_alt_to_ellipsoid(self):
+
         self.assertAlmostEqual(util.alt_to_ellipsoid_height(10,40,20),10.034187,places=10)
         self.assertAlmostEqual(util.alt_to_ellipsoid_height(5,20,60),4.957280,places=10)
         self.assertAlmostEqual(util.alt_to_ellipsoid_height(1,-90,0),0.970466,places=10)
@@ -35,7 +36,7 @@ class TestUtil(unittest.TestCase):
         self.assertAlmostEqual(util.alt_to_ellipsoid_height(-2,45,-50),-1.982954,places=10)
         self.assertAlmostEqual(util.alt_to_ellipsoid_height(5,-60,-50),5.019614,places=10)
         self.assertAlmostEqual(util.alt_to_ellipsoid_height(3.5,20,270),3.489277,places=10)
-        self.assertAlmostEqual(util.alt_to_ellipsoid_height(2.005,5.5,40),1.985737,places=10)
+        self.assertAlmostEqual(util.alt_to_ellipsoid_height(2.005,5.5,40)[0],1.985737,places=10)
         self.assertAlmostEqual(util.alt_to_ellipsoid_height(7,-20,-20),6.999373,places=10)
     
     def test_calc_dec_year(self):

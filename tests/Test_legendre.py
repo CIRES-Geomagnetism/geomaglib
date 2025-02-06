@@ -92,7 +92,7 @@ class Test_legendre(unittest.TestCase):
         #colat = 90 - lat
         alt = 100
         r, theta = util.geod_to_geoc_lat(lat, alt)
-        print(f"theta: {theta}")
+
         cotheta = 90 - theta
         colats = [cotheta]
         res_file = os.path.join(self.curr_dir, "compare_results_flattten.csv")
@@ -107,7 +107,6 @@ class Test_legendre(unittest.TestCase):
         fPlm = Plm.flatten()
         fdPlm = dPlm.flatten()
 
-        print(fPlm)
     
         gPlm, gdPlm = self.read_gsl_results()
         
@@ -138,92 +137,7 @@ class Test_legendre(unittest.TestCase):
         self.assertEqual(len(fPlm),len(gPlm))        
         self.compare_gsl_manoj(fPlm, fdPlm, gPlm, gdPlm, nmax, res_file)
 
-    def test_legendre_manoj_high(self):
 
-        lat = 20.1
-        alt = 100
-
-        r, theta = util.geod_to_geoc_lat(lat, alt)
-
-
-
-        print(f"geoc_lat: {theta}")
-
-
-        res_file = os.path.join(self.curr_dir, "compare_results_alf_high.csv")
-
-        nmax = 12
-        mPlm, mdPlm = Leg_SHA_for_import.PcupHigh(theta, nmax)
-
-
-        gPlm, gdPlm = self.read_gsl_results()
-
-
-        self.compare_gsl_manoj(mPlm, mdPlm, gPlm, gdPlm, nmax, res_file)
-    def test_compare_flatten_manoj_high(self):
-
-        lats = np.linspace(57, 61, 10)
-
-
-        nmax = 12
-
-        for lat in lats:
-            colat = 90.0 - float(lat)
-            colats = [colat]
-            fLeg = legendre.Flattened_Chaos_Legendre1(nmax, colats)
-            mPlm, mdPlm = Leg_SHA_for_import.PcupHigh(lat, nmax)
-
-            fPlm = np.array(fLeg[0]).flatten()
-            fdPlm = np.array(fLeg[1]).flatten()
-
-
-            tol = 1e-6
-
-            fidx = 1
-            for m in range(nmax+1):
-                for n in range(m, nmax+1):
-                    if n == 0:
-                        continue
-
-                    gidx = int(n * (n + 1) / 2 + m)
-
-                    self.assertAlmostEqual(fPlm[fidx], mPlm[gidx], delta=tol)
-                    self.assertAlmostEqual(fdPlm[fidx], -mdPlm[gidx], delta=tol)
-
-                    fidx += 1
-
-
-    def test_compare_flatten_manoj_low(self):
-
-        lats = np.linspace(57, 61, 10)
-
-
-        nmax = 790
-
-        for lat in lats:
-            colat = 90.0 - float(lat)
-            colats = [colat]
-            fLeg = legendre.Flattened_Chaos_Legendre1(nmax, colats)
-            mPlm, mdPlm = Leg_SHA_for_import.legendre_manoj(lat, nmax)
-
-            fPlm = np.array(fLeg[0]).flatten()
-            fdPlm = np.array(fLeg[1]).flatten()
-
-
-            tol = 1e-8
-
-            fidx = 1
-            for m in range(nmax+1):
-                for n in range(m, nmax+1):
-                    if n == 0:
-                        continue
-
-                    gidx = int(n * (n + 1) / 2 + m)
-
-                    self.assertAlmostEqual(fPlm[fidx], mPlm[gidx], delta=tol)
-                    self.assertAlmostEqual(fdPlm[fidx], -mdPlm[gidx], delta=tol)
-
-                    fidx += 1
     def test_legendre_extreme_case1(self):
 
         lat = 180
@@ -255,8 +169,6 @@ class Test_legendre(unittest.TestCase):
                     continue
 
                 gidx = int(n * (n + 1) / 2 + m)
-                print(f"legP: {legP[fidx]}, legdP: {legdP[fidx]}, mPlm: {mPlm[gidx]}, mdPlm: {mdPlm[gidx]}")
-
 
                 fidx += 1
 

@@ -12,7 +12,7 @@ def rad2deg(rad: float) -> float:
     return rad * 180.0 / math.pi
 
 
-def deg2rad(deg):
+def deg2rad(deg) ->float:
     """
         Convert degree to radius
     """
@@ -20,7 +20,7 @@ def deg2rad(deg):
     return deg * math.pi / 180.0
 
 
-def calc_Bp_Pole(nmax: int, geoc_lat: float, sph:dict[str, list[float]], g: list[float], h: list[float]) -> float:
+def calc_Bp_Pole(nmax: int, geoc_lat: Union[list[float], np.ndarray], sph:dict[str, list[float]], g: list[float], h: list[float]) -> float:
     """
     Calculate the B_phi magnetic elements at pole
     Args:
@@ -33,6 +33,9 @@ def calc_Bp_Pole(nmax: int, geoc_lat: float, sph:dict[str, list[float]], g: list
     Returns:
 
     """
+
+    if isinstance(geoc_lat, list):
+        geoc_lat = np.array(geoc_lat)
     PcupS = [0.0] * (nmax + 1)
 
     PcupS[0] = 1.0
@@ -61,7 +64,7 @@ def calc_Bp_Pole(nmax: int, geoc_lat: float, sph:dict[str, list[float]], g: list
     return Bp
 
 
-def mag_SPH_summation(nmax: int, sph: dict[str, list[float]], g: list[float], h: list[float], Leg: list[list[float]], geoc_lat: float) -> tuple:
+def mag_SPH_summation(nmax: int, sph: dict[str, list[float]], g: list[float], h: list[float], Leg: list[list[float]],geoc_lat: Union[list[float], np.ndarray]) -> tuple:
     """
     Compute the magnetic eelements
     Args:
@@ -75,6 +78,10 @@ def mag_SPH_summation(nmax: int, sph: dict[str, list[float]], g: list[float], h:
     Returns:
 
     """
+
+    if isinstance(geoc_lat, list):
+        geoc_lat = np.array(geoc_lat)
+
     Br, Bt, Bp = np.zeros(len(geoc_lat)),np.zeros(len(geoc_lat)),np.zeros(len(geoc_lat))
 
     
@@ -189,12 +196,12 @@ def rotate_magvec(Bt, Bp, Br, geoc_lat, geod_lat) -> Tuple[float, float, float]:
 
 class GeomagElements:
     def __init__(self, 
-                 Bx: Union[float, np.ndarray], 
-                 By: Union[float, np.ndarray], 
-                 Bz: Union[float, np.ndarray], 
-                 dBx: Optional[Union[float, np.ndarray]] = None, 
-                 dBy: Optional[Union[float, np.ndarray]] = None, 
-                 dBz: Optional[Union[float, np.ndarray]] = None):
+                 Bx: Union[float, np.ndarray, list],
+                 By: Union[float, np.ndarray, list],
+                 Bz: Union[float, np.ndarray, list],
+                 dBx: Optional[Union[float, np.ndarray, list]] = None,
+                 dBy: Optional[Union[float, np.ndarray, list]] = None,
+                 dBz: Optional[Union[float, np.ndarray, list]] = None):
         """
         Compute magnetic elements.
         

@@ -69,7 +69,8 @@ class TestShLoader(unittest.TestCase):
 
 
     def test_timely_modify_magnetic_model(self):
-        start_dict = sh_loader.load_coef("coefs/HDGM2024_core.cof",False,True,None,2024)
+        start_dict = sh_loader.load_coef("coefs/HDGM2024_core.cof",False,True,None, 2024)
+        print(str(start_dict))
         act_dict = sh_loader.timely_modify_magnetic_model(start_dict, 2024)
 
 
