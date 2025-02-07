@@ -1,10 +1,15 @@
 [project]
 name = "geomaglib"
-version = "1.1.1"
+version = "1.1.2"
 description = "The core library for building geomag model."
 authors = [{ name = "Li-Yin Young", email = "liyin.young@noaa.gov" }]
 classifiers = [
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]

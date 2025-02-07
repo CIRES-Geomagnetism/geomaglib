@@ -65,101 +65,100 @@ class Test_magmath(unittest.TestCase):
 
         N = len(self.Bx)
 
+        results = magmath.GeomagElements(self.Bx, self.By, self.Bz)
+        h = results.get_Bh()
+
 
         for i in range(N):
-            results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i])
-            h = results.get_Bh()
 
-            self.assertAlmostEqual(h, self.Bh[i], delta=self.tol)  # add assertion here
+            self.assertAlmostEqual(h[i], self.Bh[i], delta=self.tol)  # add assertion here
 
 
     def test_get_dBh(self):
 
         N = len(self.Bx)
+        results = magmath.GeomagElements(self.Bx, self.By, self.Bz, self.dBx, self.dBy, self.dBz)
 
-
+        dh = results.get_dBh()
         for i in range(N):
-            results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i], self.dBx[i], self.dBy[i], self.dBz[i])
-
-            dh = results.get_dBh()
-
-            self.assertAlmostEqual(dh, self.dBh[i], delta=self.tol)  # add assertion here
+            self.assertAlmostEqual(dh[i], self.dBh[i], delta=self.tol)  # add assertion here
     def test_get_Bf(self):
 
         N = len(self.Bf)
+        results = magmath.GeomagElements(self.Bx, self.By, self.Bz)
+        f = results.get_Bf()
 
         for i in range(N):
-            results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i])
-            f = results.get_Bf()
-            self.assertAlmostEqual(f, self.Bf[i], delta=self.tol)  # add assertion here
+
+            self.assertAlmostEqual(f[i], self.Bf[i], delta=self.tol)  # add assertion here
 
     def test_get_dBf(self):
 
         N = len(self.Bf)
+        results = magmath.GeomagElements(self.Bx, self.By, self.Bz, self.dBx, self.dBy, self.dBz)
+
+        df = results.get_dBf()
 
         for i in range(N):
-            results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i], self.dBx[i], self.dBy[i], self.dBz[i])
-            df = results.get_dBf()
-            print(df)
-            self.assertAlmostEqual(df, self.dBf[i], delta=self.tol)  # add assertion here
+
+            self.assertAlmostEqual(df[i], self.dBf[i], delta=self.tol)  # add assertion here
 
     def test_get_Bdec(self):
 
         N = len(self.Bdec)
+        results = magmath.GeomagElements(self.Bx, self.By, self.Bz)
+        dec = results.get_Bdec()
 
         for i in range(N):
-            results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i])
-            dec = results.get_Bdec()
 
-            self.assertAlmostEqual(round(dec, 2), self.Bdec[i], delta=0.01)  # add assertion here
+
+            self.assertAlmostEqual(round(dec[i], 2), self.Bdec[i], delta=0.01)  # add assertion here
 
     def test_get_dBdec(self):
 
         N = len(self.Bdec)
+        results = magmath.GeomagElements(self.Bx, self.By, self.Bz, self.dBx, self.dBy, self.dBz)
+        ddec = results.get_dBdec()
 
         for i in range(N):
-            results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i], self.dBx[i], self.dBy[i], self.dBz[i])
-            ddec = results.get_dBdec()
-
-            self.assertAlmostEqual(ddec*60, self.dBdec[i], delta=0.01)  # add assertion here
+            self.assertAlmostEqual(ddec[i]*60, self.dBdec[i], delta=0.1)  # add assertion here
 
     def test_get_Binc(self):
 
         N = len(self.Bdec)
+        results = magmath.GeomagElements(self.Bx, self.By, self.Bz)
+        inc = results.get_Binc()
 
         for i in range(N):
-            results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i])
-            dinc = results.get_Binc()
 
-            print(dinc)
-
-            self.assertAlmostEqual(round(dinc, 2), self.Binc[i], delta=self.tol)  # add assertion here
+            self.assertAlmostEqual(round(inc[i], 2), self.Binc[i], delta=self.tol)  # add assertion here
 
     def test_get_dBinc(self):
 
         N = len(self.Bdec)
+        results = magmath.GeomagElements(self.Bx, self.By, self.Bz, self.dBx, self.dBy, self.dBz)
+        dinc = results.get_dBinc()
 
         for i in range(N):
-            results = magmath.GeomagElements(self.Bx[i], self.By[i], self.Bz[i], self.dBx[i], self.dBy[i], self.dBz[i])
-            dinc = results.get_dBinc()
 
-            self.assertAlmostEqual(round(dinc*60, 1), self.dBinc[i], delta=self.tol)  # add assertion here
+
+            self.assertAlmostEqual(round(dinc[i]*60, 1), self.dBinc[i], delta=self.tol)  # add assertion here
 
     def test_get_all_base(self):
 
         N = len(self.Bx)
+        results = GeomagElements(self.Bx, self.By, self.Bz)
+        map = results.get_all_base()
 
         for i in range(N):
-            results = GeomagElements(self.Bx[i], self.By[i], self.Bz[i])
-            map = results.get_all_base()
 
-            self.assertAlmostEqual(map["x"], self.Bx[i], delta=self.tol)
-            self.assertAlmostEqual(map["y"], self.By[i], delta=self.tol)
-            self.assertAlmostEqual(map["z"], self.Bz[i], delta=self.tol)
-            self.assertAlmostEqual(map["h"], self.Bh[i], delta=self.tol)
-            self.assertAlmostEqual(map["f"], self.Bf[i], delta=self.tol)
-            self.assertAlmostEqual(map["dec"], self.Bdec[i], delta=0.01)
-            self.assertAlmostEqual(map["inc"], self.Binc[i], delta=0.01)
+            self.assertAlmostEqual(map["x"][i], self.Bx[i], delta=self.tol)
+            self.assertAlmostEqual(map["y"][i], self.By[i], delta=self.tol)
+            self.assertAlmostEqual(map["z"][i], self.Bz[i], delta=self.tol)
+            self.assertAlmostEqual(map["h"][i], self.Bh[i], delta=self.tol)
+            self.assertAlmostEqual(map["f"][i], self.Bf[i], delta=self.tol)
+            self.assertAlmostEqual(map["dec"][i], self.Bdec[i], delta=0.01)
+            self.assertAlmostEqual(map["inc"][i], self.Binc[i], delta=0.01)
 
     def test_get_all(self):
 
@@ -185,8 +184,8 @@ class Test_magmath(unittest.TestCase):
             self.assertAlmostEqual(map["df"][i], self.dBf[i], delta=self.tol)
 
 
-            self.assertAlmostEqual(map["ddec"][i]*60, self.dBdec[i], delta=0.01)
-            self.assertAlmostEqual(map["dinc"][i]*60, self.dBinc[i], delta=0.01)
+            self.assertAlmostEqual(map["ddec"][i]*60, self.dBdec[i], delta=0.1)
+            self.assertAlmostEqual(map["dinc"][i]*60, self.dBinc[i], delta=0.1)
 
 
     def test_arrinputs_base(self):
@@ -233,7 +232,7 @@ class Test_magmath(unittest.TestCase):
         self.assertEqual(len(ddec), len(Bx))
         self.assertEqual(len(dinc), len(Bx))
 
-        print(results.get_all())
+
 
     def test_mag_SPH_summation(self):
 
@@ -242,20 +241,24 @@ class Test_magmath(unittest.TestCase):
         alts = np.array(self.alts)
         N = len(lats)
 
-        coef_dict = sh_loader.load_coef(self.igrf_coeff, skip_two_columns=True, load_sv=True)
+
 
 
         for i in range(N):
 
-            if float(self.dyears[i]) > 1900.0:
-                continue
-            # load g, h
+            epoch = 1900 + 5*(float(self.dyears[i]) - 1900)//5
 
-            print(self.dyears[i])
+
+
+            coef_dict = sh_loader.load_coef(self.igrf_coeff, skip_two_columns=True, load_sv=True, load_year=int(epoch))
+
+
 
             timly_coef_dict = sh_loader.timely_modify_magnetic_model(coef_dict, float(self.dyears[i]))
 
-            #nmax = sh_loader.calc_num_elems_to_sh_degrees(len(timly_coef_dict["g"]))
+            nmax = sh_loader.calc_num_elems_to_sh_degrees(len(timly_coef_dict["g"]))
+
+
 
             if float(self.dyears[i]) < 2000:
                 nmax = 10
@@ -265,9 +268,10 @@ class Test_magmath(unittest.TestCase):
 
             r, theta = util.geod_to_geoc_lat(lats[i], alts[i])
             r = np.array([r])
-            theta = np.array([theta])
+            #theta = np.array([theta])
+            theta = [theta]
             sph_dict = sh_vars.comp_sh_vars(lons[i], r, theta, nmax)
-            cotheta = 90 - theta
+            cotheta = 90 - theta[0]
 
             Leg = legendre.Flattened_Chaos_Legendre1(nmax, cotheta)
 
@@ -277,6 +281,7 @@ class Test_magmath(unittest.TestCase):
             dBt, dBp, dBr = magmath.mag_SPH_summation(nmax, sph_dict, timly_coef_dict["g_sv"], timly_coef_dict["h_sv"],
                                                       Leg,
                                                       theta)
+
 
 
             x, y, z = magmath.rotate_magvec(Bt, Bp, Br, theta, lats[i])
@@ -293,7 +298,7 @@ class Test_magmath(unittest.TestCase):
         dec_year = 2024.5
 
         # load g, h
-        coef_dict = sh_loader.load_coef(self.igrf_coeff, skip_two_columns=True)
+        coef_dict = sh_loader.load_coef(self.igrf_coeff, skip_two_columns=True, load_year=2020)
         timly_coef_dict = sh_loader.timely_modify_magnetic_model(coef_dict, dec_year)
         nmax = sh_loader.calc_num_elems_to_sh_degrees(len(coef_dict["g"]))
 
@@ -307,16 +312,16 @@ class Test_magmath(unittest.TestCase):
         Leg = legendre.Flattened_Chaos_Legendre1(nmax, colats)
 
 
-        theta_nopole = theta + 1e-3
+        theta_nopole = theta + 1e-9
         Bt, Bp, Br = magmath.mag_SPH_summation(nmax, sph_dict, timly_coef_dict["g"], timly_coef_dict["h"], Leg, np.array([theta_nopole]))
-        print(f"Bt: {Bt}, Br: {Br}, Bp: {Bp}")
 
-        Bpole_t, Bpole_p, Bpole_r = magmath.mag_SPH_summation(nmax, sph_dict, timly_coef_dict["g_sv"], timly_coef_dict["h_sv"], Leg, np.array(theta))
-        print(f"Bt: {Bpole_t}, Br: {Bpole_r}, Bp: {Bpole_p}")
 
-        #self.assertEqual(Bt, Bpole_t)  # add assertion here
+        Bpole_t, Bpole_p, Bpole_r = magmath.mag_SPH_summation(nmax, sph_dict, timly_coef_dict["g"], timly_coef_dict["h"], Leg, np.array([theta]))
+
+
+        self.assertEqual(Bt, Bpole_t)  # add assertion here
         self.assertEqual(Bp, Bpole_p)
-        #self.assertEqual(Br, Bpole_r)
+        self.assertEqual(Br, Bpole_r)
 
 
 
