@@ -310,9 +310,9 @@ class GeomagElements:
         mag_map["dz"] = self.dBz
         mag_map["dh"] = (self.Bx * self.dBx + self.By * self.dBy) / h
         mag_map["df"] = (self.Bx * self.dBx + self.By * self.dBy + mag_map["z"] * self.dBz) / mag_map["f"]
-        mag_map["ddec"] = 180 / math.pi * (self.Bx * self.dBy - self.By * self.dBx) / (h ** 2)
-        mag_map["dinc"] = np.asarray((180 / math.pi * (h * self.dBz - self.Bz * mag_map["dh"])) / (f ** 2), dtype=np.float64)
-
+        mag_map["ddec"] = 180 / math.pi * (self.Bx * self.dBy - self.By * self.dBx) / (h ** 2) / 60
+        mag_map["dinc"] = np.asarray((180 / math.pi * (h * self.dBz - self.Bz * mag_map["dh"])) / (f ** 2), dtype=np.float64)/ 60
+        
         return mag_map
 
     def get_dBh(self) -> float:
