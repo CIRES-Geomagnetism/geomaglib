@@ -15,6 +15,7 @@ def comp_sh_vars(lon: float, r: float, theta: float, sh_degrees: int) -> dict[st
     """
     ellip_re = 6371.2 # Mean radius of ellipsoid
 
+    sh_degrees = int(sh_degrees)
     sh_vars = {}
     cos_lon = np.cos(np.radians(lon))
     sin_lon = np.sin(np.radians(lon))
