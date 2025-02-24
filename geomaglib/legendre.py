@@ -70,7 +70,9 @@ def Flattened_Chaos_Legendre1(nmax: int, theta: Union[float, list[float]], epsil
         if m > 0:  # Diagonal append Pnm[m,m] = sin^m(theta)
             Pnm.append(sinth * Pnm_tmp / rootn[m + m + 2])
             dPnm.append((dPnm_diag_tmp * rootn[m + 1] * np.sqrt(0.5)))
-
+    if nmax == 1:
+        Pnm.append(sinth)
+        dPnm.append(costh)
     return [Pnm, dPnm]
 
 def get_index(n: int, m:int, nmax: int) -> int:

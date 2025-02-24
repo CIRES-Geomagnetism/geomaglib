@@ -92,13 +92,11 @@ def mag_SPH_summation(nmax: int, sph: dict[str, list[float]], g: list[float], h:
 
     for m in range(nmax + 1):
         # degree
-
+        
         for n in range(m, nmax + 1):
-
             if n == 0:
                 continue
             gidx = int(n * (n + 1) / 2 + m)
-            # print('hello there', sph["relative_radius_power"][n], np.shape(sph["relative_radius_power"][n]))
             Bt -= sph["relative_radius_power"][n] * (
                     g[gidx] * sph["cos_mlon"][m] + h[gidx] * sph["sin_mlon"][m]) * legdP[
                       pidx]
