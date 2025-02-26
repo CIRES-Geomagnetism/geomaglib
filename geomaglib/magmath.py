@@ -265,7 +265,7 @@ class GeomagElements:
 
         return inc
 
-    def get_all_base(self) -> dict[str, float]:
+    def get_all_base(self) -> dict[str, np.ndarray]:
         """
         Get Bx, By, Bz, Bh, Bf, Bdec and Binc in dict
 
@@ -282,7 +282,7 @@ class GeomagElements:
         mag_map["inc"] = np.asarray(self.get_Binc(), dtype=np.float64)
         return mag_map
 
-    def get_all(self) -> dict[str, float]:
+    def get_all(self) -> dict[str, np.ndarray]:
         """
 
         Returns: all of magnetic elements:
@@ -308,12 +308,12 @@ class GeomagElements:
         mag_map["dz"] = self.dBz
         mag_map["dh"] = (self.Bx * self.dBx + self.By * self.dBy) / h
         mag_map["df"] = (self.Bx * self.dBx + self.By * self.dBy + mag_map["z"] * self.dBz) / mag_map["f"]
-        mag_map["ddec"] = 180 / math.pi * (self.Bx * self.dBy - self.By * self.dBx) / (h ** 2) / 60
-        mag_map["dinc"] = np.asarray((180 / math.pi * (h * self.dBz - self.Bz * mag_map["dh"])) / (f ** 2), dtype=np.float64)/ 60
+        mag_map["ddec"] = 180 / math.pi * (self.Bx * self.dBy - self.By * self.dBx) / (h ** 2)
+        mag_map["dinc"] = np.asarray((180 / math.pi * (h * self.dBz - self.Bz * mag_map["dh"])) / (f ** 2), dtype=np.float64)
         
         return mag_map
 
-    def get_dBh(self) -> float:
+    def get_dBh(self) -> np.ndarray:
         """
 
         Returns: delta horizontal
@@ -322,21 +322,21 @@ class GeomagElements:
         h = self.get_Bh()
         return (self.Bx * self.dBx + self.By * self.dBy) / h
 
-    def get_dBf(self) -> float:
+    def get_dBf(self) -> np.ndarray:
         """
         Returns: delta total intensity
         """
         f = self.get_Bf()
         return (self.Bx * self.dBx + self.By * self.dBy + self.Bz * self.dBz) / f
 
-    def get_dBdec(self) -> float:
+    def get_dBdec(self) -> np.ndarray:
         """
         Returns: delta declination value
         """
         h = self.get_Bh()
         return 180 / math.pi * (self.Bx * self.dBy - self.By * self.dBx) / (h ** 2)
 
-    def get_dBinc(self) -> float:
+    def get_dBinc(self) -> np.ndarray:
         """
         Returns: delta inclination value
 
