@@ -30,3 +30,24 @@ jobs:
         TWINE_USERNAME: "__token__"
         TWINE_PASSWORD: "${{ secrets.PYPI_API_TOKEN }}"
       run: twine upload dist/*
+
+  smoke_test:
+    runs-on: ubuntu-latests
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install api from PyPI
+        run: |
+          pip install geomaglib==1.1.5
+          pip install pytest
+
+      - name: Run smoke Test
+        run: |
+          pytest -m smoke smoke_test.py
