@@ -2,9 +2,7 @@ name: geomaglin ci/cd
 
 on:
   push:
-    branches:
-      - main
-      - update_sh_load
+    branches: ['*']
 jobs:
   test:
     runs-on: ubuntu-latest

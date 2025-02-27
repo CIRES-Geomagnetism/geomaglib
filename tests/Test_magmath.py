@@ -68,6 +68,8 @@ class Test_magmath(unittest.TestCase):
         results = magmath.GeomagElements(self.Bx, self.By, self.Bz)
         h = results.get_Bh()
 
+        self.assertEqual(type(h), np.ndarray)
+
 
         for i in range(N):
 
@@ -80,6 +82,7 @@ class Test_magmath(unittest.TestCase):
         results = magmath.GeomagElements(self.Bx, self.By, self.Bz, self.dBx, self.dBy, self.dBz)
 
         dh = results.get_dBh()
+        self.assertEqual(type(dh), np.ndarray)
         for i in range(N):
             self.assertAlmostEqual(dh[i], self.dBh[i], delta=self.tol)  # add assertion here
     def test_get_Bf(self):
@@ -88,6 +91,7 @@ class Test_magmath(unittest.TestCase):
         results = magmath.GeomagElements(self.Bx, self.By, self.Bz)
         f = results.get_Bf()
 
+        self.assertEqual(type(f), np.ndarray)
         for i in range(N):
 
             self.assertAlmostEqual(f[i], self.Bf[i], delta=self.tol)  # add assertion here
@@ -97,8 +101,9 @@ class Test_magmath(unittest.TestCase):
         N = len(self.Bf)
         results = magmath.GeomagElements(self.Bx, self.By, self.Bz, self.dBx, self.dBy, self.dBz)
 
-        df = results.get_dBf()
 
+        df = results.get_dBf()
+        self.assertEqual(type(df), np.ndarray)
         for i in range(N):
 
             self.assertAlmostEqual(df[i], self.dBf[i], delta=self.tol)  # add assertion here
@@ -108,6 +113,8 @@ class Test_magmath(unittest.TestCase):
         N = len(self.Bdec)
         results = magmath.GeomagElements(self.Bx, self.By, self.Bz)
         dec = results.get_Bdec()
+
+        self.assertEqual(type(dec), np.ndarray)
 
         for i in range(N):
 
@@ -120,6 +127,7 @@ class Test_magmath(unittest.TestCase):
         results = magmath.GeomagElements(self.Bx, self.By, self.Bz, self.dBx, self.dBy, self.dBz)
         ddec = results.get_dBdec()
 
+        self.assertEqual(type(ddec), np.ndarray)
         for i in range(N):
             self.assertAlmostEqual(ddec[i]*60, self.dBdec[i], delta=0.1)  # add assertion here
 
@@ -128,6 +136,8 @@ class Test_magmath(unittest.TestCase):
         N = len(self.Bdec)
         results = magmath.GeomagElements(self.Bx, self.By, self.Bz)
         inc = results.get_Binc()
+
+        self.assertEqual(type(inc), np.ndarray)
 
         for i in range(N):
 
@@ -139,6 +149,8 @@ class Test_magmath(unittest.TestCase):
         results = magmath.GeomagElements(self.Bx, self.By, self.Bz, self.dBx, self.dBy, self.dBz)
         dinc = results.get_dBinc()
 
+        self.assertEqual(type(dinc), np.ndarray)
+
         for i in range(N):
 
 
@@ -149,6 +161,9 @@ class Test_magmath(unittest.TestCase):
         N = len(self.Bx)
         results = GeomagElements(self.Bx, self.By, self.Bz)
         map = results.get_all_base()
+
+        for key in map:
+            self.assertEqual(type(map[key]), np.ndarray)
 
         for i in range(N):
 
@@ -173,7 +188,8 @@ class Test_magmath(unittest.TestCase):
         results = GeomagElements(Bx, By, Bz, dBx, dBy, dBz)
         map = results.get_all()
 
-        print(map)
+        for key in map:
+            self.assertEqual(type(map[key]), np.ndarray)
 
         for i in range(len(self.dBx)):
             self.assertAlmostEqual(map["dh"][i], self.dBh[i], delta=self.tol)
