@@ -1,6 +1,10 @@
 import math
+from typing import Optional
+
 import numpy as np
 import copy
+
+from geomaglib import util
 
 def calc_sh_degrees_to_num_elems(sh_degrees):
     """
