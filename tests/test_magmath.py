@@ -17,7 +17,7 @@ class Test_magmath(unittest.TestCase):
 
         self.curr_dir = os.path.dirname(os.path.abspath(__file__))
         self.top_dir = os.path.dirname(self.curr_dir)
-        self.igrf_coeff = os.path.join(self.curr_dir, "coefs", "IGRF14.COF")
+        self.igrf_coeff = os.path.join(self.curr_dir, "coefs", "IGRF14_sv.COF")
         self.igrf_testval = os.path.join(self.curr_dir, "IGRF14_TEST_VALUES.txt")
 
         self.setup_IGRF_TestValues(self.igrf_testval)
@@ -301,10 +301,35 @@ class Test_magmath(unittest.TestCase):
 
 
             x, y, z = magmath.rotate_magvec(Bt, Bp, Br, theta, lats[i])
+            dx, dy, dz = magmath.rotate_magvec(dBt, dBp, dBr, theta, lats[i])
+            results = GeomagElements(x, y, z, dx, dy, dz)
+            h = results.get_Bh()
+            f = results.get_Bf()
+            dec = results.get_Bdec()
+            inc = results.get_Binc()
+
+            dh = results.get_dBh()
+            df = results.get_dBf()
+            ddec = results.get_dBdec()
+            dinc = results.get_dBinc()
+
+
 
             self.assertAlmostEqual(x, self.Bx[i], delta=self.tol)
             self.assertAlmostEqual(y, self.By[i], delta=self.tol)
             self.assertAlmostEqual(z, self.Bz[i], delta=self.tol)
+            self.assertAlmostEqual(h, self.Bh[i], delta=self.tol)
+            self.assertAlmostEqual(f, self.Bf[i], delta=self.tol)
+            self.assertAlmostEqual(dec, self.Bdec[i], delta=self.tol)
+            self.assertAlmostEqual(inc, self.Binc[i], delta=self.tol)
+
+            self.assertAlmostEqual(dx, self.dBx[i], delta=self.tol)
+            self.assertAlmostEqual(dy, self.dBy[i], delta=self.tol)
+            self.assertAlmostEqual(dz, self.dBz[i], delta=self.tol)
+            self.assertAlmostEqual(dh, self.dBh[i], delta=self.tol)
+            self.assertAlmostEqual(df, self.dBf[i], delta=self.tol)
+            self.assertAlmostEqual(ddec*60, self.dBdec[i], delta=self.tol)
+            self.assertAlmostEqual(dinc*60, self.dBinc[i], delta=self.tol)
 
     def test_calc_Bp_Pole(self):
         lat = 90
