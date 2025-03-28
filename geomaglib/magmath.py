@@ -120,48 +120,6 @@ def mag_SPH_summation(nmax: int, sph: dict[str, list[float]], g: list[float], h:
     return Bt, Bp, Br
 
 
-def mag_SPH_summation_alf(nmax, sph, coef_dict, legP, legdP, geoc_lat) -> tuple:
-    """
-    Compute the magnetic elements based on Legendre function from geomag's team C library
-    Args:
-        nmax:
-        sph:
-        coef_dict:
-        legP:
-        legdP:
-        geoc_lat:
-
-    Returns:
-
-    """
-    Br, Bt, Bp = 0.0, 0.0, 0.0
-
-    for n in range(1, nmax + 1):
-        # degree
-        for m in range(n + 1):
-            gidx = int(n * (n + 1) / 2 + m)
-
-            Bt -= sph["relative_radius_power"][n] * (
-                    coef_dict["g"][gidx] * sph["cos_mlon"][m] + coef_dict["h"][gidx] * sph["sin_mlon"][m]) * legdP[
-                      gidx]
-
-            Bp += sph["relative_radius_power"][n] * (
-                    coef_dict["g"][gidx] * sph["sin_mlon"][m] - coef_dict["h"][gidx] * sph["cos_mlon"][m]) * m * legP[
-                      gidx]
-
-            Br -= sph["relative_radius_power"][n] * (
-                    coef_dict["g"][gidx] * sph["cos_mlon"][m] + coef_dict["h"][gidx] * sph["sin_mlon"][m]) * (
-                          n + 1) * legP[gidx]
-
-    cos_phi = np.cos(deg2rad(geoc_lat))
-
-    mask = np.abs(cos_phi) < 1.0e-10 
-    # Apply calc_Bp_Pole where the mask is True, otherwise perform division
-    Bp = np.where(mask, Bp + calc_Bp_Pole(nmax, geoc_lat, sph, g, h), Bp / cos_phi)
-
-
-    return Bt, Bp, Br
-
 
 def rotate_magvec(Bt, Bp, Br, geoc_lat, geod_lat) -> Tuple[float, float, float]:
     """
