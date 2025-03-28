@@ -96,7 +96,7 @@ pip install git+https://github.com/CIRES-Geomagnetism/geomaglib.git@<tag_number>
 <p> <b>decimalYearToDateTime()</b>: Covert the decimal year to year, month, day, hour and minute </p>
 </details>
 
-### geomaglib.vars
+### geomaglib.sh_vars
 
 - Computes Spherical Variabale
 <details>
