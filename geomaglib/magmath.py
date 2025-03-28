@@ -31,7 +31,7 @@ def calc_Bp_Pole(nmax: int, geoc_lat: Union[list[float], np.ndarray], sph:dict[s
         h: h coefficients
 
     Returns:
-
+        B_phi
     """
 
     if isinstance(geoc_lat, list):
@@ -66,17 +66,17 @@ def calc_Bp_Pole(nmax: int, geoc_lat: Union[list[float], np.ndarray], sph:dict[s
 
 def mag_SPH_summation(nmax: int, sph: dict[str, list[float]], g: list[float], h: list[float], Leg: list[list[float]],geoc_lat: Union[list[float], np.ndarray]) -> tuple:
     """
-    Compute the magnetic eelements
+    Compute the magnetic elements based on pole (B_theta, B_phi, B_radius)
     Args:
         nmax: max degree
-        sph: the dict svaed with spherical harmonic varialbles like (a/r) ^ (n+2), cos_m(lon), and sin_m(lon)
+        sph: the dict saved with spherical harmonic varialbles like (a/r) ^ (n+2), cos_m(lon), and sin_m(lon)
         g: g coefficients
         h: h coefficients
         Leg: legendre function array. Leg[0] for Plm array; Leg[1] for dPlm array.
         geoc_lat: geocentric latitude in degree
 
     Returns:
-
+        B_theta, B_phi, B_radius
     """
 
     if isinstance(geoc_lat, list):

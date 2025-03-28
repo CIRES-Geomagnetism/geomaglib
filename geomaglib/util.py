@@ -147,7 +147,7 @@ def calc_dec_year(year: int, month: int, day:int, hour:int = 0, minutes:int=0, s
 
 def calc_dec_year_array(year: np.ndarray[int], month: np.ndarray[int], day:np.ndarray[int], hour:np.ndarray[int]=None, minute:np.ndarray[int]=None, second:np.ndarray[int]=None ) -> np.ndarray:
     """
-    Takes year, month, and day and calculates the decimal year from those inputs
+    Takes the array of year, month, and day and outputs the decimal year from those inputs
 
     Parameters:
     year (int): The year fully written for example 2024
