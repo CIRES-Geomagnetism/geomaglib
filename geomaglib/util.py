@@ -145,7 +145,7 @@ def calc_dec_year(year: int, month: int, day:int, hour:int = 0, minutes:int=0, s
     sec_frac = (1/24) * (1/60) * (1/60) * (1/num_days_year) * seconds
     return year + day_frac + hour_frac + min_frac + sec_frac
 
-def calc_dec_year_array(year: np.ndarray, month: np.ndarray, day:np.ndarray ) -> np.ndarray:
+def calc_dec_year_array(year: np.ndarray[int], month: np.ndarray[int], day:np.ndarray[int], hour:np.ndarray[int]=None, minute:np.ndarray[int]=None, second:np.ndarray[int]=None ) -> np.ndarray:
     """
     Takes year, month, and day and calculates the decimal year from those inputs
 
@@ -168,15 +168,21 @@ def calc_dec_year_array(year: np.ndarray, month: np.ndarray, day:np.ndarray ) ->
     #     day_of_year = date.timetuple().tm_yday
     #     dec_year.append(year + ((day_of_year - 1) / num_days_year))
     # else:
+
+    N = year.size
+    if not hour:
+        hour = [0]*N
+
+    if not minute:
+        minute = [0]*N
+
+    if not second:
+        second = [0]*N
         
     for i in range(0,year.size):
-        num_days_year = 365
-        if calendar.isleap(year[i]):
-            num_days_year = 366
-        
-        date = dt.datetime(year[i], month[i], day[i])
-        day_of_year = date.timetuple().tm_yday
-        dec_year.append(year[i] + ((day_of_year - 1) / num_days_year))
+
+        decYear = calc_dec_year(year[i], month[i], day[i], hour[i], minute[i], second[i])
+        dec_year.append(decYear)
 
     return np.array(dec_year)
 def decimalYearToDateTime(dyear:float) ->tuple[float, float, float, float, float]:
