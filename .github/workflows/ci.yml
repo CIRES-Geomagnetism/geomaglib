@@ -2,13 +2,16 @@ name: geomaglib test numpy version ci/cd
 
 on:
   push:
-    branches: ["test_numpy_version"]
+    branches: ["*"]
+  pull_request:
+    branches:
+      - main
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python_version: [ '3.9', '3.10', '3.11' ]
+        python_version: [ '3.9', '3.10', '3.11', '3.12', '3.13']
 
     steps:
     - name: Checkout code

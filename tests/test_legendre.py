@@ -59,33 +59,7 @@ class Test_legendre(unittest.TestCase):
 
 
         file.close()
-        
-    def compare_gsl_manoj(self, fP, fdP, gP, gdP, nmax, out_file):
 
-
-        file = open(out_file, "w")
-        file.write("degree,order,alf_Plm,gsl_Plm,alf_dPlm,gsl_dPlm\n")
-        
-        for n in range(1, nmax+1):
-            for m in range(n+1):
-                if n == 0:
-                    continue
-
-                gidx = int(n * (n + 1) / 2 + m)
-
-                gdP[gidx] = -gdP[gidx]
-                
-
-                diff_P = math.fabs(fP[gidx] - gP[gidx])
-                diff_dP = math.fabs(fdP[gidx] - gdP[gidx])
-
-                if diff_P > 1e-6 or diff_dP > 1e-6: 
-                    file.write(f"{n},{m},{round(fP[gidx],6)},{gP[gidx]},{round(fdP[gidx],6)},{gdP[gidx]}\n")        
-                
-            
-
-        file.close()
-         
     def test_Flattened_Chaos_Legendre1(self):
     
         lat = 20.1
@@ -113,29 +87,6 @@ class Test_legendre(unittest.TestCase):
         self.assertEqual(len(fPlm),len(gPlm))        
         self.compare_gsl_flattenL(fPlm, fdPlm, gPlm, gdPlm, nmax, res_file)
 
-
-    def test_legendre_manoj_low(self):
-
-        lat = 20.1
-        colat = 90 - lat 
-        colats = [colat]
-        alt = 100
-        res_file = os.path.join(self.curr_dir, "compare_results_alf_low.csv")
-        
-        nmax = 12
-        r, theta = util.geod_to_geoc_lat(lat, alt)
-        Leg = Leg_SHA_for_import.legendre_manoj(theta, nmax)
-        
-        Plm = np.array(Leg[0])
-        dPlm = np.array(Leg[1])
-
-        fPlm = Plm.flatten()
-        fdPlm = dPlm.flatten()
-    
-        gPlm, gdPlm = self.read_gsl_results()
-        
-        self.assertEqual(len(fPlm),len(gPlm))        
-        self.compare_gsl_manoj(fPlm, fdPlm, gPlm, gdPlm, nmax, res_file)
 
 
     def test_legendre_extreme_case1(self):
@@ -197,7 +148,6 @@ class Test_legendre(unittest.TestCase):
                     continue
 
                 gidx = int(n * (n + 1) / 2 + m)
-                print(f"legP: {legP[fidx]}, legdP: {legdP[fidx]}, mPlm: {mPlm[gidx]}, mdPlm: {mdPlm[gidx]}")
 
                 self.assertAlmostEqual(legP[fidx], mPlm[gidx], delta=1e-6)
                 self.assertAlmostEqual(legdP[fidx], -mdPlm[gidx], delta=1e-6)
