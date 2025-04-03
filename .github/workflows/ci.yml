@@ -1,8 +1,8 @@
-name: geomaglin ci/cd
+name: geomaglib test numpy version ci/cd
 
 on:
   push:
-    branches: ['*']
+    branches: ["test_numpy_version"]
 jobs:
   test:
     runs-on: ubuntu-latest
