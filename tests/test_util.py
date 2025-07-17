@@ -38,7 +38,20 @@ class TestUtil(unittest.TestCase):
         self.assertAlmostEqual(util.alt_to_ellipsoid_height(3.5,20,270),3.489277,places=10)
         self.assertAlmostEqual(util.alt_to_ellipsoid_height(2.005,5.5,40)[0],1.985737,places=10)
         self.assertAlmostEqual(util.alt_to_ellipsoid_height(7,-20,-20),6.999373,places=10)
-    
+        with open('HDGM2025_MSL_TEST_VALUES.txt', 'r') as file:
+            for line in file:
+                counter = 1 
+                if not line.startswith("#"): 
+                    vars = line.split()
+                    lat = float(vars[8])
+                    lng = float(vars[9])
+                    msl = -1 *  float(vars[10])
+                    elip = -1 * float(vars[7])
+                    print(str(counter) + " lat: " + str(lat) + "lng: " + str(lng) + " msl " + str(msl) + " elip " + str(elip))
+                    counter = counter + 1
+                    self.assertAlmostEqual(util.alt_to_ellipsoid_height(msl,lat,lng)[0], elip,places=10)
+ 
+ 
     def test_calc_dec_year(self):
         self.assertAlmostEqual(util.calc_dec_year(2024,5,20),2024.3825136612,places=10)
         self.assertAlmostEqual(util.calc_dec_year(2023,5,20),2023.3808219178,places=10)
