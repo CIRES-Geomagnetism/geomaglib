@@ -38,7 +38,9 @@ class TestUtil(unittest.TestCase):
         self.assertAlmostEqual(util.alt_to_ellipsoid_height(3.5,20,270),3.489277,places=10)
         self.assertAlmostEqual(util.alt_to_ellipsoid_height(2.005,5.5,40)[0],1.985737,places=10)
         self.assertAlmostEqual(util.alt_to_ellipsoid_height(7,-20,-20),6.999373,places=10)
-        with open('HDGM2025_MSL_TEST_VALUES.txt', 'r') as file:
+
+        cur_dir = os.path.dirname(os.path.abspath(__file__))
+        with open(os.path.join(cur_dir, 'HDGM2025_MSL_TEST_VALUES.txt'), 'r') as file:
             for line in file:
 
                 if not line.startswith("#"): 
