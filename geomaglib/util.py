@@ -2,11 +2,52 @@ from typing import Union
 
 
 import numpy as np
+from numpy.typing import ArrayLike
+
 import math
 from geomaglib import geoid
 import calendar
 import datetime as dt
 
+def cart_to_sph_deg(x : ArrayLike,
+                    y : ArrayLike,
+                    z : ArrayLike):
+    """Transform cartesian inputs x,y and z into
+    spherical outputs r, theta and phi (in degrees), 
+    outputs will return with the broadcasted shape of the inputs unless all
+    inputs are scalar, in which case outputs are scalar"""
+    _x,_y,_z = np.broadcast_arrays(np.asarray(x),
+                                   np.asarray(y),
+                                   np.asarray(z))
+    shape = _x.shape
+    _x,_y,_z = _x.flatten(),_y.flatten(),_z.flatten()
+    r = np.sqrt(_x**2+_y**2+_z**2)
+    theta = np.degrees(np.arccos(_z/r))
+    phi = np.mod(np.degrees(np.arctan2(_y, _x)),360.)
+    if r.size==1 and theta.size==1 and phi.size==1:
+        return r[0],theta[0],phi[0]
+    else:
+        return r.reshape(shape),theta.reshape(shape),phi.reshape(shape)
+
+def sph_deg_to_cart(r : ArrayLike,
+                    theta : ArrayLike,
+                    phi : ArrayLike):
+    """Transform array-like spherical inputs r, theta and phi into
+    cartisian outputs x, y and z, outputs will return
+    with the broadcasted shape of the inputs unless all
+    inputs are scalar, in which case outputs are scalar"""
+    _r,_th,_ph = np.broadcast_arrays(np.asarray(r),
+                                   np.asarray(theta),
+                                   np.asarray(phi))
+    shape = _r.shape
+    _r,_th,_ph = _r.flatten(),np.radians(_th.flatten()),np.radians(_ph.flatten())
+    x = _r*np.sin(_th)*np.cos(_ph)
+    y = _r*np.sin(_th)*np.sin(_ph)
+    z = _r*np.cos(_th)
+    if x.size==1 and y.size==1 and z.size==1:
+        return x[0],y[0],z[0]
+    else:
+        return x.reshape(shape),y.reshape(shape),z.reshape(shape)
 
 def geod_to_geoc_lat(lat: float, alt: float) -> tuple[float, float]:
 
@@ -28,6 +69,9 @@ def geod_to_geoc_lat(lat: float, alt: float) -> tuple[float, float]:
     # Modified by Adam
 
     # WGS-84 Ellipsoid parameters
+
+    # NOTE: the returned "theta" is latitude not colatitude
+    #  
     a = 6378.137
     f = 1 / 298.257223563
     b = a * (1 - f)
