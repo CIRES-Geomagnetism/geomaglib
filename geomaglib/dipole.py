@@ -1,5 +1,5 @@
 import pathlib
-from typing import Union,List
+from typing import Union,List,Tuple
 from datetime import datetime
 
 import numpy as np
@@ -50,7 +50,7 @@ class Dipole:
     def coords(self,
                lat: Union[float,List[float]], 
                 lon: Union[float,List[float]],
-                inverse=False):
+                inverse=False) -> Tuple[Union[float,List[float]],Union[float,List[float]]]:
         """Calculate dipole magnetic latitude and longitude for any number of
         given geocentric latitudes and longitudes (or visa-versa if inverse==True)
         Takes and returns floats or lists of floats"""

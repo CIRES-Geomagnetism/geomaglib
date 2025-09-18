@@ -50,10 +50,12 @@ def sph_deg_to_cart(r : ArrayLike,
         return x.reshape(shape),y.reshape(shape),z.reshape(shape)
 
 def geod_to_geoc_lat(lat: float, alt: float) -> tuple[float, float]:
-
+    """Change representation of a location from geodetic to geocentric, specifically:
+    geodetic latitude [degrees] and altitude [kilometers] 
+    -to-
+    radius [kilometers] and geocentric latitude (90 - colatitude) [degrees]
+    """
     # [r, theta] = geod2geoc(alpha, h);
-    # [r, theta, B_r, B_theta] = geod2geoc(alpha, h, X, Z);
-    # conversion from geodetic X,Z components to geocentric B_r, B_theta
     # Input:   geodetic latitude lat (deg)
     #          altitude alt [km]
     # Output:  theta (deg)
