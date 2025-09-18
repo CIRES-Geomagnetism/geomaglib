@@ -12,7 +12,6 @@ from geomaglib.util import cart_to_sph_deg,sph_deg_to_cart
 
 COEF_PATH = (pathlib.Path(__file__).parents[1] / 'tests' / 'coefs' / 'IGRF14_sv.COF').resolve()
 
-
 class Dipole:
     """Calculate the geomagnetic dipole magnetic field
     Approach and math inspired by https://github.com/klaundal/dipole"""
@@ -23,6 +22,8 @@ class Dipole:
                                skip_two_columns=True,
                                load_sv=True,
                                load_year=self.base_year)
+        #Note that Laundal just interpolates linearly whereas geomaglib
+        #actually applies the secular variation
         self.coef = timely_modify_magnetic_model(self.base_coef,epoch)
         
         #Index math int(n * (n + 1) / 2 + m)
@@ -86,7 +87,7 @@ class Dipole:
         r_vec_out = np.dot(rotmat,r_vec_in)
         
         # cart to spherical
-        r_x_out,r_y_out,r_z_out = np.unstack(r_vec_out,axis=0)
+        r_x_out,r_y_out,r_z_out = r_vec_out[0,:],r_vec_out[1,:],r_vec_out[2,:]
         _,colat_out,lon_out = cart_to_sph_deg(r_x_out,r_y_out,r_z_out)
         lat_out = 90.-colat_out
     

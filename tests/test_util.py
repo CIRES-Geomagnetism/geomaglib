@@ -28,7 +28,8 @@ class TestUtil(unittest.TestCase):
             r1 = np.array([1.,0.,0.]) #cartesian position vectors
             r2 = np.array([0.,1.,0.])
             #stack as rows, split into columns to form x,y,z component vectors
-            xi,yi,zi = np.unstack(np.vstack([r1,r2]),axis=1)
+            rs = np.vstack([r1,r2])
+            xi,yi,zi = rs[:,0],rs[:,1],rs[:,2]
             xo,yo,zo = self._cart_to_sph_deg_round_trip(xi,yi,zi)
             assert_allclose(xo,xi,rtol=0,atol=1e-10)
             assert_allclose(yo,yi,rtol=0,atol=1e-10)
@@ -37,7 +38,8 @@ class TestUtil(unittest.TestCase):
             r1 = np.array([1.,0.])
             r2 = np.array([0.,1.])
             #stack as rows, split into columns to form x,y component vectors
-            xi,yi = np.unstack(np.vstack([r1,r2]),axis=1)
+            rs = np.vstack([r1,r2])
+            xi,yi = rs[:,0],rs[:,1]
             zi = 0.
             xo,yo,zo = self._cart_to_sph_deg_round_trip(xi,yi,zi)
             assert_allclose(xo,xi,rtol=0,atol=1e-10)
