@@ -2,6 +2,7 @@ import sys
 import os
 import unittest
 import numpy as np
+from numpy.testing import assert_allclose
 import math
 
 # Add the parent directory to the system path
@@ -10,6 +11,40 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from geomaglib import util
 
 class TestUtil(unittest.TestCase):
+
+    def _cart_to_sph_deg_round_trip(self,xi,yi,zi):
+        r,th,phi = util.cart_to_sph_deg(xi,yi,zi)
+        xo,yo,zo = util.sph_deg_to_cart(r,th,phi)
+        return xo,yo,zo
+    
+    def test_cart_to_sph_and_sph_to_cart(self):
+        with self.subTest('round trip, float/scalar inputs and outputs'):
+            xi,yi,zi = 1.,0.,0.
+            xo,yo,zo = self._cart_to_sph_deg_round_trip(xi,yi,zi)
+            self.assertAlmostEqual(xi,xo,places=10)
+            self.assertAlmostEqual(yi,yo,places=10)
+            self.assertAlmostEqual(zi,zo,places=10)
+        with self.subTest('round trip, numpy array inputs and outputs'):
+            r1 = np.array([1.,0.,0.]) #cartesian position vectors
+            r2 = np.array([0.,1.,0.])
+            #stack as rows, split into columns to form x,y,z component vectors
+            rs = np.vstack([r1,r2])
+            xi,yi,zi = rs[:,0],rs[:,1],rs[:,2]
+            xo,yo,zo = self._cart_to_sph_deg_round_trip(xi,yi,zi)
+            assert_allclose(xo,xi,rtol=0,atol=1e-10)
+            assert_allclose(yo,yi,rtol=0,atol=1e-10)
+            assert_allclose(zo,zi,rtol=0,atol=1e-10)
+        with self.subTest('round trip, mixed float and array inputs and array outputs'):
+            r1 = np.array([1.,0.])
+            r2 = np.array([0.,1.])
+            #stack as rows, split into columns to form x,y component vectors
+            rs = np.vstack([r1,r2])
+            xi,yi = rs[:,0],rs[:,1]
+            zi = 0.
+            xo,yo,zo = self._cart_to_sph_deg_round_trip(xi,yi,zi)
+            assert_allclose(xo,xi,rtol=0,atol=1e-10)
+            assert_allclose(yo,yi,rtol=0,atol=1e-10)
+            assert_allclose(zo,np.array([zi,zi]),rtol=0,atol=1e-10)
 
     def _test_single_geod_to_geoc_conv(self, lat, alt, exp_r, exp_theta):
         act_r, act_theta = util.geod_to_geoc_lat(lat,alt)

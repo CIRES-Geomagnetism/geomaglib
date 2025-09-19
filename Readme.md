@@ -77,9 +77,6 @@ pip install git+https://github.com/CIRES-Geomagnetism/geomaglib.git@<tag_number>
 <p></p>
 </details>
 
-
-
-
 ### geomaglib.util
 
 - Compute decimal year
@@ -88,9 +85,8 @@ pip install git+https://github.com/CIRES-Geomagnetism/geomaglib.git@<tag_number>
 
 <details>
 <summary>See the detail of functions</summary>
-<p> <b>geod_to_geoc_lat()</b>: Conversion from geodetic X,Z components to geocentric B_r, B_theta </p>
-<p> <b>alt_to_ellipsoid_height()</b>: This function converts altitude MSL in kilometers to ellipsoid height in
-    kilometers</p>
+<p> <b>geod_to_geoc_lat()</b>: Conversion of locations in geodetic (geodetic latitude, altitude in kilometers) to geocentric (radius in kilometers , geocentric latitude) </p>
+<p> <b>alt_to_ellipsoid_height()</b>: This function converts mean sea level (MSL) altitude in kilometers to ellipsoid height in kilometers</p>
 <p> <b>calc_dec_year()</b>: Takes year, month, and day and calculates the decimal year from those inputs </p>
 <p> <b>calc_dec_year_array()</b>:Takes the array of year, month, and day and outputs the decimal year from those inputs </p>
 <p> <b>decimalYearToDateTime()</b>: Covert the decimal year to year, month, day, hour and minute </p>
@@ -128,6 +124,24 @@ pip install git+https://github.com/CIRES-Geomagnetism/geomaglib.git@<tag_number>
 <p> <b>timely_modify_magnetic_model_wmm()</b></p>
 <p> <b>timely_modify_magnetic_model_HDGM()</b></p>
 
+</details>
+
+### geomaglib.dipole
+
+- Geomagnetic dipole location for a set of geomagnetic main field coefficients (default is IGRF14)
+- Geomagnetic dipole to geocentric spherical coordinate (and back) coordinate rotation
+- Follows approach of [Laundal & Richmond](https://github.com/klaundal/dipole)
+
+<details>
+<summary> See details of functions </summary>
+
+## geomaglib.dipole.Dipole
+* Class representing geomagnetic dipole location for a particular epoch (decimal year)
+    * Example: `dp=Dipole(2024.1)`
+* Method `coords`, transform from geomagnetic dipole coordinates (lat,lon) to geocentric spherical coordinates (lat,lon)
+    * Input and output types: scalar float or list of float
+    * Geocentric to dipole: `mlat,mlon = dp.coords(gclat,glon)`
+    * Dipole to geocentric: `gclat,glon = dp.coords(mlat,mlon,inverse=True)` 
 </details>
 
 ## Contacts and contributing to geomaglib:

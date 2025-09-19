@@ -128,9 +128,9 @@ def rotate_magvec(Bt, Bp, Br, geoc_lat, geod_lat) -> Tuple[float, float, float]:
             Parameters:
             ___________
 
-            Bt: magnetic elements theta
-            Bp: magnetic elements phi
-            Br: magnetic elements radius
+            Bt: magnetic elements theta (vector component in spherical polar direction)
+            Bp: magnetic elements phi (vector component in spherical azimuthal direction)
+            Br: magnetic elements radius (vector component in spherical radial direction)
             geoc_lat: geocentric latitude
             geod_lat: geeodetic latitude
 
@@ -138,7 +138,7 @@ def rotate_magvec(Bt, Bp, Br, geoc_lat, geod_lat) -> Tuple[float, float, float]:
             _________
 
             B:array the magnetic vector based on geodetic
-            B = [Bx, By, Bz]
+            B = [Bx (geodetic southward), By (eastward), Bz (geodetic upward)]
     """
 
     psi = (math.pi / 180.0) * (geoc_lat - geod_lat)

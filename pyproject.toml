@@ -1,14 +1,16 @@
 [project]
 name = "geomaglib"
-version = "1.2.1"
+version = "1.2.2"
 description = "The core library for building geomag model."
 authors = [{ name = "Li-Yin Young", email = "liyin.young@noaa.gov" },
 { name = "Collin Kadlecek", email = "collin.kadlecek@noaa.gov" },
-    {name = "Nir Boneh", email = "nir.boneh@noaa.gov"}]
+    {name = "Nir Boneh", email = "nir.boneh@noaa.gov"},
+    {name = "Liam Kilcommons", email = "liam.kilcommons@colorado.edu"}]
 
 maintainers = [{ name = "Li-Yin Young", email = "liyin.young@noaa.gov" },
 { name = "Collin Kadlecek", email = "collin.kadlecek@noaa.gov" },
-{name = "Nir Boneh", email = "nir.boneh@noaa.gov"}]
+{name = "Nir Boneh", email = "nir.boneh@noaa.gov"},
+{name = "Liam Kilcommons", email = "liam.kilcommons@colorado.edu"}]
 
 classifiers = [
     "Programming Language :: Python :: 3",
