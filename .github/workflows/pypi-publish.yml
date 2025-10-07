@@ -32,7 +32,7 @@ jobs:
       run: twine upload dist/*
 
   smoke_test:
-    runs-on: ubuntu-latests
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -45,7 +45,7 @@ jobs:
 
       - name: Install api from PyPI
         run: |
-          pip install geomaglib==1.1.5
+          pip install geomaglib
           pip install pytest
 
       - name: Run smoke Test
