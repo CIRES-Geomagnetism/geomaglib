@@ -1,16 +1,21 @@
+import pathlib
 import unittest
 from numpy.testing import assert_allclose
 from geomaglib.dipole import Dipole
+
+COEF_PATH = (pathlib.Path(__file__).parent / 'coefs' / 'IGRF14_sv.COF').resolve()
 
 class TestDipole(unittest.TestCase):
     
     def test_coord_accuracy(self):
         """Tests results against reference results from
-        https://github.com/klaundal/dipole.
+        https://github.com/klaundal/dipole. Since these
+        test results were computed using IGRF14, 
+        explictly specify coefficients file
         We can only get this to .01 accuracy because 
         Laundal dipole does not use secular variation, but rather
         interpolates coefficients linearly"""
-        dp = Dipole(2025.5)
+        dp = Dipole(2025.5,coef_path=COEF_PATH)
         gclats = [-89,-45.,0.,45.,89.]
         glons = [-179.,-90.,0.,90.,179.]
         exp_mlats = [-81.03790935, -36.16814416, 2.70974606, 36.16814416, 80.45017686]

@@ -10,15 +10,15 @@ from geomaglib.sh_vars import comp_sh_vars
 from geomaglib.sh_loader import load_coef,timely_modify_magnetic_model
 from geomaglib.util import cart_to_sph_deg,sph_deg_to_cart
 
-COEF_PATH = (pathlib.Path(__file__).parents[1] / 'tests' / 'coefs' / 'IGRF14_sv.COF').resolve()
+COEF_PATH = (pathlib.Path(__file__).parent / 'cof' / 'IGRF14_sv.COF').resolve()
 
 class Dipole:
     """Calculate the geomagnetic dipole magnetic field
     Approach and math inspired by https://github.com/klaundal/dipole"""
     
-    def __init__(self, epoch : float):
+    def __init__(self, epoch : float, coef_path : str = COEF_PATH):
         self.base_year = int(epoch) - int(epoch % 5)
-        self.base_coef = load_coef(COEF_PATH,
+        self.base_coef = load_coef(coef_path,
                                skip_two_columns=True,
                                load_sv=True,
                                load_year=self.base_year)
