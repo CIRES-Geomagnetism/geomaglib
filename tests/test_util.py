@@ -82,8 +82,10 @@ class TestUtil(unittest.TestCase):
                     vars = line.split()
                     lat = float(vars[8])
                     lng = float(vars[9])
+
                     msl = float(vars[10]) *  0.001
                     elip = -1 * float(vars[7])  * 0.001
+
 
                     self.assertAlmostEqual(util.alt_to_ellipsoid_height(msl,lat,lng)[0], elip,places=4)
  
