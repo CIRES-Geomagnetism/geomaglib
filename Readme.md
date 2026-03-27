@@ -3,7 +3,6 @@
 ![PyPI - Version](https://img.shields.io/pypi/v/geomaglib)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/geomaglib)
 ![PyPI - License](https://img.shields.io/pypi/l/geomaglib)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/geomaglib)
 [![PyPI Downloads](https://static.pepy.tech/badge/geomaglib)](https://pepy.tech/projects/geomaglib)
 
 geomaglib Python API includes the core functions for building geomag model like WMM, WMMHR, HDGM-crust, HDGM-core and IGRF.
