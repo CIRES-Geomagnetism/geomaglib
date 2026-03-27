@@ -103,7 +103,7 @@ class Test_legendre(unittest.TestCase):
         legP = np.array(Leg[0]).flatten()
         legdP = np.array(Leg[1]).flatten()
 
-        mLeg = Leg_SHA_for_import.legendre_manoj(theta, nmax)
+        mLeg = Leg_SHA_for_import.legendre_geomag_c(theta, nmax)
 
         mPlm = np.array(mLeg[0]).flatten()
         mdPlm = np.array(mLeg[1]).flatten()
