@@ -1271,7 +1271,7 @@ def permute_SHA(nmin, nmax):
     return(permute)
 
 
-def legendre_manoj(lat, nMax):
+def legendre_geomag_c(lat, nMax):
     """
     Computes  all of the Schmidt-semi normalized associated Legendre
     functions up to degree nMax. If nMax <= 16, function MAG_PcupLow is used.

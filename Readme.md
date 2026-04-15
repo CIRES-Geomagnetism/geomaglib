@@ -1,12 +1,12 @@
 # geomaglib
 
 ![PyPI - Version](https://img.shields.io/pypi/v/geomaglib)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/geomaglib)
 ![PyPI - License](https://img.shields.io/pypi/l/geomaglib)
-![PyPI - Downloads](https://img.shields.io/pypi/dm/geomaglib)
 [![PyPI Downloads](https://static.pepy.tech/badge/geomaglib)](https://pepy.tech/projects/geomaglib)
 
 geomaglib Python API includes the core functions for building geomag model like WMM, WMMHR, HDGM-crust, HDGM-core and IGRF.
-The API is developed by by the Cooperative Institute For Research in Environmental Sciences (CIRES), University of Colorado. 
+The API is developed by the Cooperative Institute For Research in Environmental Sciences (CIRES), University of Colorado. 
 
 ## Installation
 
@@ -26,6 +26,28 @@ pip install git+https://github.com/CIRES-Geomagnetism/geomaglib.git@<branch_name
 ```commandline
 pip install git+https://github.com/CIRES-Geomagnetism/geomaglib.git@<tag_number>
 ```
+
+## Quick Start
+
+### Example 1: Compute the associated Legendre polynomials up to degree 12
+```python
+from geomaglib import legendre
+
+nmax = 12
+colats = [30.0]  # colatitudes in degrees
+Pnm, dPnm = legendre.Flattened_Chaos_Legendre1(nmax, colats)
+```
+### Example 2: Calculate dipole magnetic latitude and longitude
+
+```python                                                                                                                                                                                                                       
+from geomaglib.dipole import Dipole                                                                                                                                                                                             
+
+dp = Dipole(2024.1)                                                                                                                                                                                                             
+mlat, mlon = dp.coords(40.0, -105.0)                                                                                                                                                                                            
+gclat, gclon = dp.coords(mlat, mlon, inverse=True)
+```                                                                  
+For spherical harmonic models, load coefficients with `geomaglib.sh_loader` and compute fields with `geomaglib.magmath`.
+
 ## API Reference
 
 ### geomaglib.legendre
@@ -49,7 +71,7 @@ pip install git+https://github.com/CIRES-Geomagnetism/geomaglib.git@<tag_number>
 <p>rad2deg(): Convert radius to degree</p>
 <p>deg2rad(): Convert degree to radius</p>
 <p>calc_Bp_Pole(): Calculate the B_phi magnetic elements at pole</p>
-<p>mag_SPH_summation(): Compute the sperical magnetic vectors (B_theta, B_phi, B_radius)</p>
+<p>mag_SPH_summation(): Compute the spherical magnetic vectors (B_theta, B_phi, B_radius)</p>
 <p>rotate_magvec():   Convert magnetic vector from spherical to geodetic</p>
 <p>GeomagElements(): The Python class for computing magnetic elements in geodetic coordinates </p>
     <ul>
@@ -80,7 +102,7 @@ pip install git+https://github.com/CIRES-Geomagnetism/geomaglib.git@<tag_number>
 ### geomaglib.util
 
 - Compute decimal year
-- Converting the coordinates based on gedetic to geocentric
+- Converting the coordinates based on geodetic to geocentric
 - Converting the mean sea level altitude to ellipsoid height
 
 <details>
@@ -89,16 +111,16 @@ pip install git+https://github.com/CIRES-Geomagnetism/geomaglib.git@<tag_number>
 <p> <b>alt_to_ellipsoid_height()</b>: This function converts mean sea level (MSL) altitude in kilometers to ellipsoid height in kilometers</p>
 <p> <b>calc_dec_year()</b>: Takes year, month, and day and calculates the decimal year from those inputs </p>
 <p> <b>calc_dec_year_array()</b>:Takes the array of year, month, and day and outputs the decimal year from those inputs </p>
-<p> <b>decimalYearToDateTime()</b>: Covert the decimal year to year, month, day, hour and minute </p>
+<p> <b>decimalYearToDateTime()</b>: Convert the decimal year to year, month, day, hour and minute </p>
 </details>
 
 ### geomaglib.sh_vars
 
-- Computes Spherical Variabale
+- Computes Spherical Variable
 <details>
 <summary>See the detail of functions</summary>
 
-<p> <b>comp_sh_vars()</b>: Computes spherical variabale and put the results in a dictionary
+<p> <b>comp_sh_vars()</b>: Computes spherical variable and put the results in a dictionary
     variable computed are (a/r) ^ (n+2), cos_m(lon), and sin_m(lon)</p>
 
 </details>
@@ -106,15 +128,15 @@ pip install git+https://github.com/CIRES-Geomagnetism/geomaglib.git@<tag_number>
 
 ### geomaglib.sh_loader
 
-- Estimate the total elements from end degree ofr the model coefficients
-- Funtions for loading WMM2025.COF, IGRF14.COF
-- Compute time change the Model coefficients from the base year of the model(epoch) using secular variation coefficients.
+- Estimate the total elements from end degree of the model coefficients
+- Functions for loading WMM2025.COF, IGRF14.COF
+- Compute time change the model coefficients from the base year of the model (epoch) using secular variation coefficients.
 
 <details>
 <summary>See the detail of functions</summary>
 
 <p> <b>calc_sh_degrees_to_num_elems()</b>: Gives you the number of elements from the number of 
-    sphereical harmonic degree
+    spherical harmonic degree
 </p>
 <p> <b>calc_num_elems_to_sh_degrees()</b>: Gives you the number of spherical harmonic degrees from the total number
     of elements
@@ -143,6 +165,11 @@ pip install git+https://github.com/CIRES-Geomagnetism/geomaglib.git@<tag_number>
     * Geocentric to dipole: `mlat,mlon = dp.coords(gclat,glon)`
     * Dipole to geocentric: `gclat,glon = dp.coords(mlat,mlon,inverse=True)` 
 </details>
+
+## Development / Testing
+
+For local development, create a virtual environment, install in editable mode, and run tests:
+`python -m pip install -e .` and `python -m pytest`.
 
 ## Contacts and contributing to geomaglib:
 If you have any questions, please email `geomag.models@noaa.gov`, submit issue or pull request at [https://github.com/CIRES-Geomagnetism/geomaglib](https://github.com/CIRES-Geomagnetism/geomaglib).
